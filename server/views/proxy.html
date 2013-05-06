@@ -49,6 +49,28 @@
         使用文档和原理：<a href="https://github.com/czy88840616/avalon-node/wiki/Proxy" target="_blank">https://github.com/czy88840616/avalon-node/wiki/Proxy</a>
     </p>
     <form class="bs-docs">
+        <h2>域名转换</h2>
+        <div class="controls">
+            <input class="span3" type="text" placeholder="域名" id="J_Domain">
+            <i class="icon-chevron-right">&nbsp;&nbsp;&nbsp;&nbsp;</i>
+            <input class="span3" type="text" placeholder="代理IP/域名(:端口)" id="J_ProxyIp">
+        </div>
+        <div class="controls">
+            <a id="J_AddNewDomain" class="btn btn-primary">添加域名转ip</a>
+            <br/><br/>
+            <p>
+                <span class="badge badge-warning">Warning</span> 用于在代理规则中替换URL类型的域名，防止HOST绑定到本地死循环，如需修改重复添加同名域名即可
+            </p>
+        </div>
+        {foreach domain in proxyDomain}
+        <div class="controls">
+            <input class="span3 J_Domain" type="text" value="{domain.key}" readonly>
+            <i class="icon-chevron-right">&nbsp;&nbsp;&nbsp;&nbsp;</i>
+            <input class="span3" type="text" value="{domain.value}" readonly>
+            <a href="#" class="J_RemoveDomain"><i class="icon-remove"></i></a>
+        </div>
+        {end}
+        <hr>
         <h2>代理规则</h2>
         <div class="controls controls-row">
             <input class="span4" type="text" placeholder="匹配的正则，例如：kissy-min" id="J_Pattern">
@@ -82,28 +104,6 @@
         <div class="controls">
             <a class="btn btn-primary" id="J_Save">保存改动</a>
         </div>
-        <hr>
-        <h2>域名转换</h2>
-        <div class="controls">
-            <input class="span3" type="text" placeholder="域名" id="J_Domain">
-            <i class="icon-chevron-right">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-            <input class="span3" type="text" placeholder="代理IP/域名(:端口)" id="J_ProxyIp">
-        </div>
-        <div class="controls">
-            <a id="J_AddNewDomain" class="btn btn-primary">添加域名转ip</a>
-            <br/><br/>
-            <p>
-                <span class="badge badge-warning">Warning</span> 用于在代理规则中替换URL类型的域名，防止HOST绑定到本地死循环，如需修改重复添加同名域名即可
-            </p>
-        </div>
-        {foreach domain in proxyDomain}
-        <div class="controls">
-            <input class="span3 J_Domain" type="text" value="{domain.key}" readonly>
-            <i class="icon-chevron-right">&nbsp;&nbsp;&nbsp;&nbsp;</i>
-            <input class="span3" type="text" value="{domain.value}" readonly>
-            <a href="#" class="J_RemoveDomain"><i class="icon-remove"></i></a>
-        </div>
-        {end}
     </form>
 </div>
 <div class="footer">
