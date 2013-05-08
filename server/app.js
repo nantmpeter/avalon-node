@@ -231,7 +231,7 @@ app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, re
                         stream.on('error', callback);
                     } else {
                         res.statusCode = 404;
-                        res.setHeader('Content-type', 'text/html');
+//                        res.setHeader('Content-type', 'text/html');
                         res.write('<h1>这个文件真的不存在，404了哦</h1>查找的文件是：' +
                             uri +
                             '<hr>Powered by Vmarket');
