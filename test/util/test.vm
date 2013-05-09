@@ -1,62 +1,21 @@
-你好
-##test it
-// go
-#*
-dsafsdaf
-*#
-jjjj
 
-#if($!topMemberServer.render().indexOf("taobao.com") > 0)
-    #set($tbDomain="taobao.com")
-#else
-    #set($tbDomain="daily.taobao.net")
-#end
-
-## 此模板包含全网公共页尾
-## 引用方法：$control.setTemplate("vmcommon/p/3.1/sportal/footer.vm")
-##                 .setParameter("jsExtra", "")     ## 额外的 JS 文件路径(从assets根目录开始)，以逗号分隔
-##                 .setParameter("timestamp", "")   ## 时间戳，如 20110214
-##                 .setParameter("version", "")     ## 默认为 1.1.6
-##				   .setParameter("hasSwitchableAndOverlay", "")    ## 是否已经加载过switchable和overlay组件了，如果有值，则不在vm里加载这2个组件
-#if($!{extra})
-    #set($extra2 = ",${extra}")
-#end
-
-#if($!{jsExtra})
-    #set($jsExtra2 = ",${jsExtra}")
-#end
-##
-#if($!{timestamp})
-    #set($timestamp2 = "${timestamp}")
-#else
-    #set($timestamp2 = "20120702")
-#end
-<!-- from vmcommon -->
-<div id="footer">
-    $!securityUtil.ignoretext($tmsTool.importRgn("/rgn/hd2010/footer.php",1))
-    <div id="server-num">$systemUtil.hostInfo.name</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="gbk">
+    <meta name="spm-id" content="$!{spm-id}" />
+    <title>照片上传</title>
+    $control.setTemplate("commonHeader.vm")
+    #parse("/layout/global_vars.vm")
+    <link rel="stylesheet" href="${uiServer}/apps/customize/photoprint/??common/common-min.css,upload/$assetsTimeStamp/page/upload-min.css" />
+</head>
+<body>
+    $control.setTemplate("vmcommon/s/3.1/header.vm")  ## 吊顶
+    $control.setTemplate("navigate.vm") ## 头，包括导航条。
+<script>TB.Global.init();</script>
+<div id="content">
+    $screen_placeholder
 </div>
-<script>
-    // 快捷菜单API
-    quick_menu = {
-        apiMenus:'http://mai.$tbDomain/json/home/seller_menu_data.htm',
-        apiSave:'http://mai.$tbDomain/json/home/seller_menu_save.htm'
-        #if(!$isSubUser),apiOnekey:'http://mai.$tbDomain/json/home/default_menu_data.htm'#end
-    }
-</script>
-
-
-#if(!$!{hasSwitchableAndOverlay})
-    #if(!$!{version})
-        #set($version2 = "1.1.6")
-    <script src="http://a.tbcdn.cn/s/kissy/$!{version2}/??switchable/switchable-pkg-min.js,uibase/uibase-pkg-min.js,overlay/overlay-pkg-min.js"></script>
-    #elseif("$!{version}" == "1.2.0")
-        #set($version2 = "1.2.0")
-    <script src="http://a.tbcdn.cn/s/kissy/$!{version2}/??switchable-min.js,uibase-min.js,overlay-min.js"></script>
-    #else
-        #set($version2 = "1.1.6")
-    <script src="http://a.tbcdn.cn/s/kissy/$!{version2}/??switchable/switchable-pkg-min.js,uibase/uibase-pkg-min.js,overlay/overlay-pkg-min.js"></script>
-    #end
-#end
-<script src="$!uiModule/??apps/sportal/2.0/common/js/se/seller-init-min.js$!{extra2}$!{jsExtra2}?t=$!{timestamp2}.js"></script>
-<!-- end vmcommon -->
+    #include("/layout/footer.vm")
+</body>
+</html>
