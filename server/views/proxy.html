@@ -85,6 +85,15 @@
         {end}
         <hr>
         <h2>代理规则</h2>
+        <div class="controls well well-small">
+            <div class="input-prepend input-append">
+                <span class="add-on">http://</span>
+                <input type="text" type="url" class="span6" id="J_CheckUrlValue">
+                <a class="btn btn-primary" id="J_CheckUrl">填写URL，查看匹配的规则</a>
+            </div>
+            <p id="J_CheckResult"></p>
+        </div>
+        <hr>
         <div class="controls controls-row">
             <input class="span4" type="text" placeholder="匹配的正则，例如：kissy-min" id="J_Pattern">
             <i class="icon-retweet pull-left" style="margin: 7px 10px;"></i>

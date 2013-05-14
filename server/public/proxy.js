@@ -97,4 +97,26 @@ $(function () {
         radioClass: 'iradio_minimal-blue',
         increaseArea: '20%' // optional
     });
+
+    $('#J_CheckUrl').click(function(ev){
+        ev.preventDefault();
+        $.post('/proxy/checkRule', {
+            url: $('#J_CheckUrlValue').val()
+        }, function(data){
+            if(data.success) {
+                var result = data.result || {}, html=[];
+                $.each(result, function(k, v){
+                    html.push('匹配到规则 ');
+                    html.push(k);
+                    html.push(' => 代理结果为 ');
+                    html.push(v);
+                    html.push('<br>');
+                });
+
+                $('#J_CheckResult').html(html.join('') || '没有匹配到规则');
+            } else {
+                alert(data.msg);
+            }
+        });
+    });
 });

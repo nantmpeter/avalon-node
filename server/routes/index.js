@@ -13,7 +13,8 @@ var webx = require('../../lib/webx/webx'),
     fileUtil = require('../../lib/util/fileUtil'),
     querystring = require('querystring'),
     innerData = require('../../lib/webx/innerData'),
-    request = require('request');
+    request = require('request'),
+    url = require('url');
 
 var App = {
     find: function(params, cb) {
@@ -501,6 +502,56 @@ var Proxy = {
                 cb(null, {success:true});
             }
         });
+    },
+    checkRule: function(params, cb){
+        var rules = userCfg.get('rules') || [],
+            proxyDomain = userCfg.get('proxyDomain'),
+            checkUrl = params.url,
+            err,
+            uriObjs;
+            result = {};
+
+        if(checkUrl.indexOf('http://') == -1) {
+            checkUrl = 'http://' + checkUrl;
+        }
+
+        try {
+            uriObjs = url.parse(checkUrl);
+        } catch(ex) {
+            err = '解析url失败';
+        }
+
+        if(err){
+            cb(err, {success: false});
+        } else {
+            var domain = uriObjs.hostname;
+            _.each(rules, function(rule){
+                if(rule.enable) {
+                    var uri = checkUrl;
+                    var pattern = new RegExp(rule.pattern, 'g');
+                    if(pattern.test(checkUrl)) {
+                        uri = checkUrl.replace(pattern, rule.target);
+                        if(!util.isLocalFile(rule.target)) {
+                            uri = uri.replace(domain, proxyDomain[domain]);
+                        } else {
+                            //过滤时间戳
+                            uri = uri.replace(/\?.*/, '');
+                            //因为这里的url是完整的url，所以在本地路径下要把域名这部分给干掉 http://assets.daily.taobao.net:3000D:/project/cart/asset
+                            uri = uri.replace(uriObjs.protocol + '//' + uriObjs.host, '');
+                        }
+
+                        if(_.isUndefined(proxyDomain[domain])) {
+                            result[rule.pattern] = uri.replace('undefined', '127.0.0.1');
+                        } else {
+                            result[rule.pattern] = uri;
+                        }
+                    }
+                }
+            });
+
+            cb(null, {success: true, result: result});
+        }
+
     }
 };
 
