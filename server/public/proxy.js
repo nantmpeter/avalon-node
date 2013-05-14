@@ -5,12 +5,8 @@
  */
 $(function () {
     $('.J_RuleEnabled').each(function(idx, el){
-        $(el).click(function(e){
-            $(this).button('toggle').toggleClass('btn-success');
-        });
-
         if($(el).attr('data-enable') == 'true') {
-            $(el).button('toggle').addClass('btn-success');
+            $(el).attr('checked', 'checked')
         }
     });
 
@@ -76,7 +72,7 @@ $(function () {
                 pattern: $('.J_RulePattern', el).val(),
                 target: $('.J_RuleTarget', el).val(),
                 charset: $('.J_RuleCharset', el).attr('checked') ? 'utf-8' : 'gbk',
-                enable: $('.J_RuleEnabled', el).hasClass('active')
+                enable: !!$('.J_RuleEnabled', el).attr('checked')
             });
         });
 
@@ -94,5 +90,11 @@ $(function () {
     $('.J_RuleRemove').click(function(ev){
         ev.preventDefault();
         $(this).parent().remove();
+    });
+
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_minimal-blue rule-check',
+        radioClass: 'iradio_minimal-blue',
+        increaseArea: '20%' // optional
     });
 });

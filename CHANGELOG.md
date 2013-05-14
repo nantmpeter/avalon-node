@@ -2,7 +2,10 @@
 
 ###0.0.5###
 
-* bugfix 解决velocity注释control渲染失败的bug
+* bugfix 解决因为回车问题导致移除velocity错误的渲染失败的bug
+* bugfix 解决图片不能代理 #32
+* new 新增proxy规则校验
+* optimize 优化proxy界面，勾选优化
 
 ###0.0.4###
 
@@ -23,6 +26,7 @@
 
 * new npm模块名改为vmarket，便于记忆
 
+----
 ----
 **以下为avalon-node的日志，仅记录那逝去的年华**
 

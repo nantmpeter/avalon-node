@@ -225,7 +225,10 @@ app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, re
 
                     if(fs.existsSync(uri)) {
                         var stream = fs.createReadStream(uri);
-                        res.write('/*url: ['+uri+'], matched pattern: [' + rule.pattern.replace(/\//g, ' /') + ']*/\r\n');
+                        //非图片类型才能输出文本
+                        if(contentType[path.extname(paths[0].replace(/\?.*/, ''))].indexOf('image') == -1) {
+                            res.write('/*url: ['+uri+'], matched pattern: [' + rule.pattern.replace(/\//g, ' /') + ']*/\r\n');
+                        }
                         stream.pipe(res, { end: false });
                         stream.on('end', callback);
                         stream.on('error', callback);
