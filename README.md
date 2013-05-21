@@ -5,7 +5,7 @@
 虽然我们无法控制webx使用velocity，但是我们可以基于velocity，用我们自己熟悉的语言去写demo，希望使用Vmarket的前端们开创一个新的demo时代。
 
 ## 安装
-**node version >= 0.8.0 && < 0.10.x ** ，windows推荐安装 http://nodejs.org/dist/v0.8.23/node-v0.8.23-x86.msi
+**node version >= 0.8.0 && < 0.10.x** ，windows推荐安装 http://nodejs.org/dist/v0.8.23/node-v0.8.23-x86.msi
 
 windows:
 ```
