@@ -2,7 +2,7 @@
     "author":"Harry <czy88840616@gmail.com>",
     "name":"vmarket",
     "description":"The nodejs client for VMarket",
-    "version":"0.0.7",
+    "version":"0.0.8",
     "keywords":[
         "vmarket",
         "vcenter",
@@ -34,21 +34,21 @@
         }
     ],
     "dependencies":{
-        "iconv-lite":"0.2.1",
-        "express":"3.0.0beta7",
-        "mkdirp":"0.3.4",
-        "colors":"0.6.0",
-        "async":"0.1.18",
-        "underscore":"1.4.2",
-        "optimist":"0.3.4",
-        "nconf":"0.6.5",
-        "request":"2.11.4",
-        "walkdir":"0.0.5",
+        "iconv-lite":"0.2.10",
+        "express":"3.2.6",
+        "mkdirp":"0.3.5",
+        "colors":"0.6.0-1",
+        "async":"0.2.9",
+        "underscore":"1.4.4",
+        "optimist":"0.5.2",
+        "nconf":"0.6.7",
+        "request":"2.21.0",
+        "walkdir":"0.0.7",
         "consolidate":"0.4.0",
         "jazz":"0.0.18",
         "combo-url-parser":"0.0.2",
         "easyconf": "0.0.3",
-        "fileutil": "1.1.0",
+        "fileutil": "1.1.1",
         "velocity-parser":"0.0.3"
     }
 }
