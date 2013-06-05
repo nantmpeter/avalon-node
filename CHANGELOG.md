@@ -1,14 +1,16 @@
 新版本修复了旧bug，新增了不少功能，也可能会有稳定性风险，请酌情升级，[升级指南](https://github.com/czy88840616/avalon-node/wiki/安装及使用
 
-###0.0.8###
+###0.0.10###
+
+* bugfix 更新应用导致乱码问题（参数未回写）
+
+###0.0.8~0.0.9###
+
 * optimize 升级依赖兼容node 0.10.*
 * bugfix 处理了一个不同module的control的json文件获取不到的问题(home:control/a.vm下的json无法获得)
 * bugfix 同名module的control中不添加modudle名导致API里NPE的bug
 
-###0.0.7###
-* 无
-
-###0.0.6###
+###0.0.6~0.0.7###
 
 * bugfix 当.do的请求而静态数据不是json时的输出纠正，同时动态数据的输出处理，之前是不支持的
 

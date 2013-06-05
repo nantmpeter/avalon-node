@@ -226,7 +226,9 @@ var App = {
                 var appName = path.basename(root);
 
                 //合并新旧同名应用
-                result.tools = oldapp.tools || {};
+                result['tools'] = oldapp['tools'] || {};
+                result['encoding'] = oldapp['encoding'];
+                result['defaultModule'] = oldapp['defaultModule']; //有可能那个module不是原来那个了，这里有隐患
 
                 apps[appName] = result;
                 userCfg.set('apps', apps);
