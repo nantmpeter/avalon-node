@@ -3,6 +3,7 @@
 ###0.0.10###
 
 * bugfix 更新应用导致乱码问题（参数未回写）
+* bugfix 新加rundata.setLayout时的layout处理
 
 ###0.0.8~0.0.9###
 
