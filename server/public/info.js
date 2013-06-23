@@ -313,4 +313,17 @@ $(function () {
             resetButton(ev.target);
         });
     });
+
+    $('.J_ChangeLayout').change(function(ev) {
+        $.post('/app/changeLayout', {
+            layout: $(ev.target).val(),
+            target: $('#J_Target').val()
+        }, function(data){
+            if(data.success) {
+                location.reload();
+            } else {
+                alert(data.error);
+            }
+        });
+    });
 });

@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/jquery/jquery-1.8.1.min.js"></script>
 </head>
 <body>
+<input type="hidden" value="{target}" id="J_Target"/>
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
@@ -117,26 +118,20 @@
             </div>
         </div>
         <div class="tab-pane" id="other">
-            <h3>暂未开放</h3>
-            {if false}
+            <h3>设定layout</h3>
+            {if true}
             <div class="form-horizontal">
-                <label class="control-label">当前layout：</label>
+                <label class="control-label">指定layout：</label>
                 <div class="controls">
                     <div class="input-prepend input-append">
                         <span class="add-on">layout/</span>
-                        <input class="span3" id="appendedPrependedInput" size="16" type="text">
-                        <button class="btn btn-primary" type="button">编辑</button>
-                    </div>
-                </div>
-                <div class="controls">
-                    <div class="input-prepend input-append">
-                        <span class="add-on">layout/</span>
-                        <select class="input-xlarge">
+                        <select class="input-xlarge J_ChangeLayout">
+                            <option value="">自动识别Layout</option>
+                            <option value="null" {if currentLayout eq 'null'} selected {end}>不使用任何Layout</option>
                             {foreach layout in layouts}
-                            <option value="{layout}">{layout}</option>
+                            <option value="{layout}" {if currentLayout eq layout} selected {end}>{layout}</option>
                             {end}
                         </select>
-                        <button class="btn btn-primary" type="button">完成</button>
                     </div>
                 </div>
             </div>

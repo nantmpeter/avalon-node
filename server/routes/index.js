@@ -405,6 +405,31 @@ var App = {
         } else {
             cb(null, {success:true});
         }
+    },
+    changeLayout: function(params, cb){
+        var layout = params.layout,
+            target = params.target,
+            apps = userCfg.get('apps'),
+            use = userCfg.get('use'),
+            layouts = apps[use]['layout'] || {};
+
+        if(layout) {
+            layouts[target] = layout;
+            apps[use]['layout'] = layouts;
+        } else {
+            layouts[target] && delete layouts[target];
+            apps[use]['layout'] = layouts;
+        }
+
+        userCfg.save(function(err){
+            if(err) {
+                cb(null, {success:false,msg:err});
+            } else {
+                cb(null, {success:true});
+            }
+        });
+
+        cb(null, {success: true});
     }
 };
 
