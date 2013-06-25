@@ -69,8 +69,8 @@ $(function () {
         var rules = [];
         $('#J_SortRules .J_Sort').each(function(idx, el){
             rules.push({
-                pattern: $('.J_RulePattern', el).val(),
-                target: $('.J_RuleTarget', el).val(),
+                pattern: $.trim($('.J_RulePattern', el).val()),
+                target: $.trim($('.J_RuleTarget', el).val()),
                 charset: $('.J_RuleCharset', el).attr('checked') ? 'utf-8' : 'gbk',
                 enable: !!$('.J_RuleEnabled', el).attr('checked')
             });
