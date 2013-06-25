@@ -205,7 +205,7 @@ $(function () {
             className = $('#J_ToolsList option:selected').text();
 
         //非uri类型的key不能和默认值相同
-        if($('#J_ToolsList').val() != 'uri' && toolsList[key] && className == toolsList[key]['class']) {
+        if($('#J_ToolsKey').val() != 'tmsTool' && $('#J_ToolsList').val() != 'uri' && toolsList[key] && className == toolsList[key]['class']) {
             $('#J_ToolsError').text('填写的变量请不要和默认值相同！').fadeIn();
             return;
         }
