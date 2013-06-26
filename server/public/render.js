@@ -12,13 +12,13 @@ var toolsList = {
         }
     },
     tmsTool: {
-        class:"web.tools.webx.TmsTool",
+        class:"com.taobao.vcenter.webx.TmsTool",
         props:{
             env:["dev","online"]
         }
     },
     cmsTool:{
-        class:"web.tools.webx.CmsTool"
+        class:"com.taobao.vcenter.webx.CmsTool"
     },
     stringUtil:{
         class:"com.alibaba.common.lang.StringUtil"
@@ -51,7 +51,7 @@ var toolsList = {
         class:"com.alibaba.common.lang.StringEscapeUtil"
     },
     csrfToken:{
-        class:"web.tools.webx.CsrfTokenTool"
+        class:"com.taobao.vcenter.webx.CsrfTokenTool"
     }
 };
 window.tools = window.tools || {};
