@@ -2,8 +2,10 @@
 
 ###0.0.11###
 
+* new 自定义设置layout的功能，对应开发在java类中的setLayout
 * bugfix 处理tmstool的key不能重复添加的问题
 * bugfix 修改由于类不对导致自定义工具类失效的问题
+* bugfix 修复一个在点开“查看详情”时报500的问题
 
 ###0.0.10###
 

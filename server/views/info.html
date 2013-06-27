@@ -128,7 +128,7 @@
                         <select class="input-xlarge J_ChangeLayout">
                             <option value="">自动识别Layout</option>
                             <option value="null" {if currentLayout eq 'null'} selected {end}>不使用任何Layout</option>
-                            {foreach layout in layouts}
+                            {foreach layout in layoutArr}
                             <option value="{layout}" {if currentLayout eq layout} selected {end}>{layout}</option>
                             {end}
                         </select>
