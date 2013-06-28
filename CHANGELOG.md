@@ -1,5 +1,9 @@
 新版本修复了旧bug，新增了不少功能，也可能会有稳定性风险，请酌情升级，[升级指南](https://github.com/czy88840616/avalon-node/wiki/安装及使用
 
+###0.0.12###
+
+* optimize 当parse或者control.setTemplate为变量时，在大多数情况下也已经可以获取到正确的模板了
+
 ###0.0.11###
 
 * new 自定义设置layout的功能，对应开发在java类中的setLayout
