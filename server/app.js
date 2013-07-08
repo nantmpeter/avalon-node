@@ -57,9 +57,6 @@ app.configure('production', function(){
     app.use(express.errorHandler());
 });
 
-app.get('/list/(:appname)?', user.list);
-app.all('/app/:operate', routes.operate);
-
 app.all('/*.(*htm*|do)', checkConfig, function(req, res, next){
     //这里编码就取当前使用的应用编码
     var useApp = userCfg.get('use'),
@@ -150,6 +147,9 @@ app.get('*.vm', checkConfig, function(req, res, next){
         }
     });
 });
+
+app.get('/list/(:appname)?', user.list);
+app.all('/app/:operate', routes.operate);
 
 var processUrl = function(uri, domain,  callback){
     var rules = userCfg.get('rules'),
