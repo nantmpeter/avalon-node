@@ -57,6 +57,127 @@ app.configure('production', function(){
     app.use(express.errorHandler());
 });
 
+var contentType = {
+    '.js':'application/x-javascript;',
+    '.css':'text/css;',
+    '.swf':'application/x-shockwave-flash;',
+    '.png': 'image/png;',
+    '.gif': 'image/gif;',
+    '.jpg': 'image/jpeg;',
+    '.ico': 'image/x-icon;',
+    '.less': 'text/css;',
+    '.scss': 'text/css;'
+};
+
+var processUrl = function(uri, domain,  callback){
+    var rules = userCfg.get('rules'),
+        proxyDomain = userCfg.get('proxyDomain'),
+        isMatch = false,
+        matchRule;
+
+    _.each(rules, function(rule){
+        if(!isMatch && rule.enable) {
+            var pattern = new RegExp(rule.pattern, 'g');
+            if(pattern.test(uri)) {
+                uri = uri.replace(pattern, rule.target);
+                matchRule = rule;
+                isMatch = true;
+            }
+        }
+    });
+
+    if(!isMatch) {
+        if(!proxyDomain[domain]) {
+            console.log('[' + 'WARN'.yellow + '] 请配置一条域名转换以避免死循环, domain=%s',domain.cyan);
+        }
+        //没匹配到的，必须要过滤域名为ip
+        uri = proxyDomain[domain] + uri;
+    } else if(!util.isLocalFile(uri)) {
+        if(!proxyDomain[domain]) {
+            console.log('[' + 'WARN'.yellow + '] 请配置一条域名转换以避免死循环, domain=%s',domain.cyan);
+        }
+        uri = proxyDomain[domain] + uri;
+    }
+
+    if(_.isUndefined(proxyDomain[domain])) {
+        uri = uri.replace('undefined', '127.0.0.1:' + app.get('port'));
+    }
+
+    callback(uri, matchRule);
+};
+app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, res, next){
+    //反向代理bugfix
+    var host = req.headers['x-forwarded-host'] || req.headers['X-Forwarded-For']|| req.headers.host || '',
+        debug = userCfg.get('debug');
+
+    if(host.indexOf('127.0.0.1') == -1 && host.indexOf('localhost') == -1
+        && (/\.(css|js|ico|png|jpg|swf|less|gif|woff|scss)/.test(req.url) || req.url.indexOf("??") != -1)) {
+        var paths;
+        //combo
+        if(req.url.indexOf('??') != -1) {
+            var p =  url.parse(req.url);
+            paths = comboParser(p.path);
+        } else {
+            paths = [req.url];
+        }
+
+        res.setHeader('Content-type', contentType[path.extname(paths[0].replace(/\?.*/, ''))]);
+
+        async.forEachSeries(paths, function(p, callback){
+            processUrl(p, host, function(uri, rule){
+                if(util.isLocalFile(uri, debug)) {
+                    uri = uri.replace(/\?.*/, '');
+
+                    if(fs.existsSync(uri)) {
+                        var stream = fs.createReadStream(uri);
+                        //非图片类型才能输出文本
+                        if(contentType[path.extname(paths[0].replace(/\?.*/, ''))].indexOf('image') == -1) {
+                            res.write('/*url: ['+uri+'], matched pattern: [' + rule.pattern.replace(/\//g, ' /') + ']*/\r\n');
+                        }
+                        stream.pipe(res, { end: false });
+                        stream.on('end', callback);
+                        stream.on('error', callback);
+                    } else {
+                        res.statusCode = 404;
+//                        res.setHeader('Content-type', 'text/html');
+                        res.write('<h1>这个文件真的不存在，404了哦</h1>查找的文件是：' +
+                            uri +
+                            '<hr>Powered by Vmarket');
+                        res.end();
+                    }
+                } else {
+                    request.get({
+                        url:  'http://' + uri,
+                        encoding: null
+                    }, function (error, response, body) {
+                        if(error) {
+                            res.write(error.toString() + ', uri=http://' + uri);
+                        }
+
+                        if(!response) {
+                            console.log('connect fail: ' + uri);
+                        } else if(response.statusCode == 200) {
+                            res.write(body);
+                        } else if(response.statusCode == 404) {
+                            res.statusCode = 404;
+//                            res.setHeader('Content-type', 'text/html');
+                            error && console.log(error);
+                            res.write('<h1>这个文件真的不存在，404了哦</h1>给你看看错误信息<div><textarea style="width:600px;height:400px">' +
+                                (error ? error.toString(): body) +
+                                '</textarea></div><hr>Powered by Vmarket');
+                        }
+                        callback(error);
+                    });
+                }
+            });
+        }, function(err){
+            res.end();
+        });
+    } else {
+        next();
+    }
+});
+
 app.all('/*.(*htm*|do)', checkConfig, function(req, res, next){
     //这里编码就取当前使用的应用编码
     var useApp = userCfg.get('use'),
@@ -150,128 +271,6 @@ app.get('*.vm', checkConfig, function(req, res, next){
 
 app.get('/list/(:appname)?', user.list);
 app.all('/app/:operate', routes.operate);
-
-var processUrl = function(uri, domain,  callback){
-    var rules = userCfg.get('rules'),
-        proxyDomain = userCfg.get('proxyDomain'),
-        isMatch = false,
-        matchRule;
-
-    _.each(rules, function(rule){
-        if(!isMatch && rule.enable) {
-            var pattern = new RegExp(rule.pattern, 'g');
-            if(pattern.test(uri)) {
-                uri = uri.replace(pattern, rule.target);
-                matchRule = rule;
-                isMatch = true;
-            }
-        }
-    });
-
-    if(!isMatch) {
-        if(!proxyDomain[domain]) {
-            console.log('[' + 'WARN'.yellow + '] 请配置一条域名转换以避免死循环, domain=%s',domain.cyan);
-        }
-        //没匹配到的，必须要过滤域名为ip
-        uri = proxyDomain[domain] + uri;
-    } else if(!util.isLocalFile(uri)) {
-        if(!proxyDomain[domain]) {
-            console.log('[' + 'WARN'.yellow + '] 请配置一条域名转换以避免死循环, domain=%s',domain.cyan);
-        }
-        uri = proxyDomain[domain] + uri;
-    }
-
-    if(_.isUndefined(proxyDomain[domain])) {
-        uri = uri.replace('undefined', '127.0.0.1');
-    }
-
-    callback(uri, matchRule);
-};
-
-var contentType = {
-    '.js':'application/x-javascript;',
-    '.css':'text/css;',
-    '.swf':'application/x-shockwave-flash;',
-    '.png': 'image/png;',
-    '.gif': 'image/gif;',
-    '.jpg': 'image/jpeg;',
-    '.ico': 'image/x-icon;',
-    '.less': 'text/css;',
-    '.scss': 'text/css;'
-};
-
-app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, res, next){
-    //反向代理bugfix
-    var host = req.headers['x-forwarded-host'] || req.headers['X-Forwarded-For']|| req.headers.host || '',
-        debug = userCfg.get('debug');
-
-    if(host.indexOf('127.0.0.1') == -1 && host.indexOf('localhost') == -1
-        && (/\.(css|js|ico|png|jpg|swf|less|gif|woff|scss)/.test(req.url) || req.url.indexOf("??") != -1)) {
-        var paths;
-        //combo
-        if(req.url.indexOf('??') != -1) {
-            var p =  url.parse(req.url);
-            paths = comboParser(p.path);
-        } else {
-            paths = [req.url];
-        }
-
-        res.setHeader('Content-type', contentType[path.extname(paths[0].replace(/\?.*/, ''))]);
-
-        async.forEachSeries(paths, function(p, callback){
-            processUrl(p, host, function(uri, rule){
-                if(util.isLocalFile(uri, debug)) {
-                    uri = uri.replace(/\?.*/, '');
-
-                    if(fs.existsSync(uri)) {
-                        var stream = fs.createReadStream(uri);
-                        //非图片类型才能输出文本
-                        if(contentType[path.extname(paths[0].replace(/\?.*/, ''))].indexOf('image') == -1) {
-                            res.write('/*url: ['+uri+'], matched pattern: [' + rule.pattern.replace(/\//g, ' /') + ']*/\r\n');
-                        }
-                        stream.pipe(res, { end: false });
-                        stream.on('end', callback);
-                        stream.on('error', callback);
-                    } else {
-                        res.statusCode = 404;
-//                        res.setHeader('Content-type', 'text/html');
-                        res.write('<h1>这个文件真的不存在，404了哦</h1>查找的文件是：' +
-                            uri +
-                            '<hr>Powered by Vmarket');
-                        res.end();
-                    }
-                } else {
-                    request.get({
-                        url:  'http://' + uri,
-                        encoding: null
-                    }, function (error, response, body) {
-                        if(error) {
-                            res.write(error.toString() + ', uri=http://' + uri);
-                        }
-
-                        if(!response) {
-                            console.log('connect fail: ' + uri);
-                        } else if(response.statusCode == 200) {
-                            res.write(body);
-                        } else if(response.statusCode == 404) {
-                            res.statusCode = 404;
-//                            res.setHeader('Content-type', 'text/html');
-                            error && console.log(error);
-                            res.write('<h1>这个文件真的不存在，404了哦</h1>给你看看错误信息<div><textarea style="width:600px;height:400px">' +
-                                (error ? error.toString(): body) +
-                                '</textarea></div><hr>Powered by Vmarket');
-                        }
-                        callback(error);
-                    });
-                }
-            });
-        }, function(err){
-            res.end();
-        });
-    } else {
-        next();
-    }
-});
 
 app.get('/', routes.index);
 app.get('/proxy', routes.proxy);
