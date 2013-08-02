@@ -23,6 +23,7 @@ var express = require('express')
     , iconv = require('iconv-lite')
     , colors = require('colors')
     , Env = require('../lib/env')
+    , Arrow = require('arrow')
     , async = require('async');
 
 var checkConfig = function(req, res, next){
@@ -293,6 +294,12 @@ http.createServer(app).listen(app.get('port'), function () {
         setTimeout(function () {
             util.startWeb('http://127.0.0.1:' + app.get('port'));
         }, 300);
+    }
+
+    if('arrow' == userCfg.get('proxyType')) {
+        Arrow.web({
+            port: 3000
+        });
     }
 }).on('error', function(err){
     console.log('Status:', 'Fail'.bold.red);

@@ -49,6 +49,7 @@
         "combo-url-parser":"0.0.2",
         "easyconf": "0.0.3",
         "fileutil": "1.1.1",
-        "velocity-parser":"0.0.4"
+        "velocity-parser":"0.0.4",
+        "arraw": "0.0.1"
     }
 }

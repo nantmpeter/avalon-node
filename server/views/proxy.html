@@ -56,7 +56,10 @@
     </div>
 </div>
 <div class="container">
-    <div class="page-header"><h1>配置你的VMarket Assets Proxy</h1></div>
+    <div class="page-header">
+        <h1 style="display: inline-block;">配置你的VMarket Assets Proxy</h1>
+        <a class="btn btn-success" data-toggle="modal" href="#update-proxy" data-backdrop="true">升级到新版代理</a>
+    </div>
     <p>
         <span class="badge badge-info"><i class="icon-exclamation-sign icon-white"></i> Tips</span>
         使用文档和原理：<a href="https://github.com/czy88840616/avalon-node/wiki/Proxy" target="_blank">https://github.com/czy88840616/avalon-node/wiki/Proxy</a>
@@ -141,5 +144,29 @@
 {if checkUpgrade}
 <script type="text/javascript" src="/upgrade.js"></script>
 {end}
+<div id="update-proxy" class="modal fade" style="display: none">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>升级为新版代理-Arrow</h3>
+    </div>
+    <div class="modal-body" style="font-size: 12px">
+        <p>原本的vmarket的代理可以解决大多数的情况，但是还是有一些特殊场景无法进行代理，比如：</p>
+        <p>1. 某些URL用一条正则无法完全匹配完</p>
+        <p>2. 目录很多，规则要重复配</p>
+        <p>3. 域名转换不理解意思</p>
+        <p>新版的工具解决了这些问题，并且希望能够变得更加好用方便，但是希望可以让用户主动来选择。</p>
+        <p>用户可能会觉得新版好用，也一定会觉得有一些不足和bug。</p>
+        <p>没关系，都请反馈一下，会帮助作者做的更好。</p>
+        <p>确定了，就来升级试试吧，希望能喜欢。</p>
+    </div>
+    <div class="modal-footer">
+        <div class="progress progress-success progress-striped active" style="background-color: #eee">
+            <div class="bar" style="width: 1%;"></div>
+        </div>
+        <span class="step" style="float: left"></span>
+        <a href="#" class="btn" data-dismiss="modal">关闭</a>
+        <a href="#" class="btn btn-primary J_UpdateProxy">确定升级</a>
+    </div>
+</div>
 </body>
 </html>

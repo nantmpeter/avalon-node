@@ -3,7 +3,7 @@
  * GET home page.
  */
 var webx = require('../../lib/webx/webx'),
-    util = require('../../lib/util/util'),
+    webUtil = require('../../lib/util/util'),
     path = require('path'),
     fs = require('fs'),
     _ = require('underscore'),
@@ -13,6 +13,7 @@ var webx = require('../../lib/webx/webx'),
     fileUtil = require('../../lib/util/fileUtil'),
     querystring = require('querystring'),
     innerData = require('../../lib/webx/innerData'),
+    Env = require('../../lib/env'),
     request = require('request'),
     url = require('url');
 
@@ -25,7 +26,7 @@ var App = {
                 cb(JSON.stringify({success:false, msg:err}));
             } else {
                 var data = {
-                    tree:util.json2Tree(result, {isLeafParent: true}),
+                    tree:webUtil.json2Tree(result, {isLeafParent: true}),
                     subModule:_.keys(result['subModule'])
                 };
                 cb(err, JSON.stringify({success:true, data:data}));
@@ -55,7 +56,7 @@ var App = {
     },
     get: function(appName) {
         var json = userCfg.get('apps')[appName];
-        return util.json2Tree(json)
+        return webUtil.json2Tree(json)
     },
     add: function(params, cb){
         var root = params.root,
@@ -299,11 +300,11 @@ var App = {
             type = userCfg.get('type'),
             common = userCfg.get('common');
 
-        var guid = util.createSnapGuid(uri);
+        var guid = webUtil.createSnapGuid(uri);
 
         var template = render.parse({
             app: appname,
-            config: util.merge(apps[appname], {
+            config: webUtil.merge(apps[appname], {
                 common: common,
                 type: type
             }),
@@ -453,11 +454,16 @@ exports.operate = function(req, res){
 };
 
 exports.proxy = function(req, res){
-    res.render('proxy', {
-        proxyDomain:userCfg.get('proxyDomain'),
-        rules:userCfg.get('rules'),
-        checkUpgrade: new Date().getTime() - userCfg.get('lastCheckTime') >= 259200000 //大于3天升级
-    });
+    var proxyType = userCfg.get('proxyType');
+    if(proxyType && proxyType == 'arrow') {
+        res.redirect();
+    } else {
+        res.render('proxy', {
+            proxyDomain:userCfg.get('proxyDomain'),
+            rules:userCfg.get('rules'),
+            checkUpgrade: new Date().getTime() - userCfg.get('lastCheckTime') >= 259200000 //大于3天升级
+        });
+    }
 };
 
 var Proxy = {
@@ -558,7 +564,7 @@ var Proxy = {
                     var pattern = new RegExp(rule.pattern, 'g');
                     if(pattern.test(checkUrl)) {
                         uri = checkUrl.replace(pattern, rule.target);
-                        if(!util.isLocalFile(rule.target)) {
+                        if(!webUtil.isLocalFile(rule.target)) {
                             uri = uri.replace(domain, proxyDomain[domain]);
                         } else {
                             //过滤时间戳
@@ -578,7 +584,49 @@ var Proxy = {
 
             cb(null, {success: true, result: result});
         }
+    },
+    checkUpdateStatus: function(params, cb){
+        var step = params.step || 0;
+        if(step === 0) {
+            var rulePool = {},
+                solutions = {},
+                customSolutionGuid = webUtil.newGuid();
 
+            solutions["GLOBAL"] = {
+                "title":"全局场景",
+                "rules":[
+                ]
+            };
+
+            solutions[customSolutionGuid] = {
+                "title":"自定义场景一",
+                "rules":[
+                ]
+            };
+
+            var newConfig = {
+                rulePool: rulePool,
+                settings: settings,
+                solutions: solutions,
+                use: {
+                    '127.0.0.1': customSolutionGuid
+                }
+            };
+
+            if(!fs.existsSync(Env.arrowCfg)) {
+                fs.writeFile(Env.arrowCfg, JSON.stringify(newConfig), function(err){
+                    if(err) {
+                        cb(null, {success: false, msg: 'Arrow配置创建失败'});
+                    } else {
+                        cb(null, {success: true, data: {
+                            step: 1
+                        }});
+                    }
+                });
+            } else {
+                cb(null, {success: true, msg: 'Arrow配置已经存在'});
+            }
+        }
     }
 };
 

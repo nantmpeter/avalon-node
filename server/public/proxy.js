@@ -119,4 +119,32 @@ $(function () {
             }
         });
     });
+
+    $('#update-proxy .J_UpdateProxy').click(function(ev){
+        ev.preventDefault();
+
+        var stepText = [
+            '正在第一阶段：创建Arrow配置文件',
+            '正在第二阶段：迁移原本代理的配置信息',
+            '正在第三阶段：修改Vmarket配置',
+            '升级完成，请重新启动Vmarket再访问本页面'
+        ];
+
+        $('#update-proxy .step').html(stepText[0]);
+        var current = 0;
+
+        var updateHandler = setInterval(function(){
+            $.post('/proxy/checkUpdateStatus', {
+                step:current
+            },function(data){
+                if(data.success) {
+                    $('#update-proxy .step').html(stepText[data.data.step]);
+                } else {
+                    updateHandler.cancel();
+                    updateHandler = null;
+                    $('#update-proxy .step').html(stepText[data.data.step]);
+                }
+            });
+        }, 1500);
+    });
 });
