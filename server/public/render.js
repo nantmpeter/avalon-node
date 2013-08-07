@@ -52,6 +52,15 @@ var toolsList = {
     },
     csrfToken:{
         class:"com.taobao.vcenter.webx.CsrfTokenTool"
+    },
+    pageCache:{
+        class:"com.taobao.vcenter.webx.pageCacheTool"
+    },
+    vmcommonControl: {
+        class:"com.taobao.vcenter.webx.VmcommonControl"
+    },
+    unicornTool: {
+        class:"com.taobao.vcenter.webx.b2b.UnicornPullTool"
     }
 };
 window.tools = window.tools || {};
