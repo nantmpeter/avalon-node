@@ -23,7 +23,7 @@ var express = require('express')
     , iconv = require('iconv-lite')
     , colors = require('colors')
     , Env = require('../lib/env')
-    , Arrow = require('arrow')
+    , Egg = require('egg')
     , async = require('async');
 
 var checkConfig = function(req, res, next){
