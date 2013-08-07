@@ -113,6 +113,20 @@
             </div>
         </div>
     </form>
+    <hr>
+    <h2>其他配置</h2>
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label">数据互通</label>
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" id="J_IsControlGlobal" value="1" {if data.isControlGlobal eq 'true'} checked {end}>
+                    screen数据依旧可以被control所访问
+                </label>
+                <p class="help-block">有一些应用（例如拍卖）的control的数据和screen一样，开发把control配置成#parse一样的功能，此项可以让前端无需创建control的数据文件，直接使用screen这一份数据即可</p>
+            </div>
+        </div>
+    </form>
 </div>
 <div id="J_ToolModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
