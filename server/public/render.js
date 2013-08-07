@@ -300,4 +300,17 @@ $(function () {
     }).mouseleave(function(){
         $(this).find('.J_ScreenPopup').hide()
     });
+
+    $('#J_IsControlGlobal').on('click', function(ev){
+        $.post('/app/updateControlGlobal', {
+            isControlGlobal:!!$(ev.target).attr('checked')
+        }, function(data){
+            if(data.success) {
+                location.reload();
+            } else {
+                alert(data.msg);
+            }
+        });
+
+    });
 });

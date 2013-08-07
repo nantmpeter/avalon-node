@@ -431,6 +431,23 @@ var App = {
         });
 
         cb(null, {success: true});
+    },
+    updateControlGlobal: function(params, cb){
+        var isControlGlobal = params.isControlGlobal,
+            apps = userCfg.get('apps'),
+            use = userCfg.get('use');
+
+        apps[use].isControlGlobal = isControlGlobal;
+
+        userCfg.save(function(err){
+            if(err) {
+                cb(null, {success:false,msg:err});
+            } else {
+                cb(null, {success:true});
+            }
+        });
+
+        cb(null, {success: true});
     }
 };
 
