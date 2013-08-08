@@ -3,7 +3,8 @@
 ###0.0.17###
 
 * bugfix 修复查找包含的模板逻辑，以前只会查找control.setTemplate
-* new 增加pageCache的工具类
+* bugfix 修复代理碰到/home路径就会判断出错的问题
+* new 增加一些例如pageCache的工具类
 
 ###0.0.16###
 
