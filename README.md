@@ -23,6 +23,7 @@ $ sudo npm install -g vmarket
 ## 参数
 
  * -p [number] 端口号
+ * -v 当前版本
 
 ##详细文档
 https://github.com/czy88840616/avalon-node/wiki

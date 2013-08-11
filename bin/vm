@@ -30,7 +30,9 @@ function done(err, message) {
 var commands = require('../lib/cmd');
 
 var command = 'web';
-if (argv._[0]) {
+if(argv.v) {
+    command = 'version';
+} else if (argv._[0]) {
 	switch(argv._[0]) {
 		case 'help':
 			command = 'help';
