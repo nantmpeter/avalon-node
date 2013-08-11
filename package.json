@@ -50,6 +50,6 @@
         "easyconf": "0.0.3",
         "fileutil": "1.1.1",
         "velocity-parser":"0.0.4",
-        "egg": "1.0.0"
+        "magic-cube": "0.0.1"
     }
 }

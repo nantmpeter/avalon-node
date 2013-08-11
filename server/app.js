@@ -23,7 +23,6 @@ var express = require('express')
     , iconv = require('iconv-lite')
     , colors = require('colors')
     , Env = require('../lib/env')
-    , Egg = require('egg')
     , async = require('async');
 
 var checkConfig = function(req, res, next){
@@ -296,11 +295,11 @@ http.createServer(app).listen(app.get('port'), function () {
         }, 300);
     }
 
-    if('arrow' == userCfg.get('proxyType')) {
-        Arrow.web({
-            port: 3000
-        });
-    }
+//    if('mc' == userCfg.get('proxyType')) {
+//        Arrow.web({
+//            port: 3000
+//        });
+//    }
 }).on('error', function(err){
     console.log('Status:', 'Fail'.bold.red);
     console.log('Error:', err.message.toString().bold.red, '可能是端口被占用或者权限不足');
