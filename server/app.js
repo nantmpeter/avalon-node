@@ -71,7 +71,6 @@ var contentType = {
 
 var processUrl = function(uri, domain,  callback){
     var rules = userCfg.get('rules'),
-        proxyDomain = userCfg.get('proxyDomain'),
         isMatch = false,
         matchRule;
 
@@ -85,23 +84,6 @@ var processUrl = function(uri, domain,  callback){
             }
         }
     });
-
-    if(!isMatch) {
-        if(!proxyDomain[domain]) {
-            console.log('[' + 'WARN'.yellow + '] 请配置一条域名转换以避免死循环, domain=%s',domain.cyan);
-        }
-        //没匹配到的，必须要过滤域名为ip
-        uri = proxyDomain[domain] + uri;
-    } else if(!util.isLocalFile(uri)) {
-        if(!proxyDomain[domain]) {
-            console.log('[' + 'WARN'.yellow + '] 请配置一条域名转换以避免死循环, domain=%s',domain.cyan);
-        }
-        uri = proxyDomain[domain] + uri;
-    }
-
-    if(_.isUndefined(proxyDomain[domain])) {
-        uri = uri.replace('undefined', '127.0.0.1:' + app.get('port'));
-    }
 
     callback(uri, matchRule);
 };
@@ -130,24 +112,23 @@ app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, re
 
                     if(fs.existsSync(uri)) {
                         var stream = fs.createReadStream(uri);
-                        //非图片类型才能输出文本
-                        if(contentType[path.extname(paths[0].replace(/\?.*/, ''))].indexOf('image') == -1) {
-                            res.write('/*url: ['+uri+'], matched pattern: [' + rule.pattern.replace(/\//g, ' /') + ']*/\r\n');
-                        }
+
                         stream.pipe(res, { end: false });
                         stream.on('end', callback);
                         stream.on('error', callback);
                     } else {
                         res.statusCode = 404;
 //                        res.setHeader('Content-type', 'text/html');
-                        res.write('<h1>这个文件真的不存在，404了哦</h1>查找的文件是：' +
-                            uri +
-                            '<hr>Powered by Vmarket');
+                        res.write('这个文件真的不存在，404了哦，查找的文件是：' + uri);
                         res.end();
                     }
                 } else {
+                    uri = 'http://proxy.taobao.net' + uri;
                     request.get({
-                        url:  'http://' + uri,
+                        url:  uri,
+                        qs: {
+                            domain: host
+                        },
                         encoding: null
                     }, function (error, response, body) {
                         if(error) {

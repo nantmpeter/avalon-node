@@ -2,7 +2,7 @@
     "author":"Harry <czy88840616@gmail.com>",
     "name":"vmarket",
     "description":"The nodejs client for VMarket",
-    "version":"0.0.16",
+    "version":"0.0.17",
     "keywords":[
         "vmarket",
         "vcenter",
@@ -49,7 +49,6 @@
         "combo-url-parser":"0.0.2",
         "easyconf": "0.0.3",
         "fileutil": "1.1.1",
-        "velocity-parser":"0.0.4",
-        "magic-cube": "0.0.1"
+        "velocity-parser":"0.0.4"
     }
 }

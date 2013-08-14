@@ -5,6 +5,8 @@
 * bugfix 修复查找包含的模板逻辑，以前只会查找control.setTemplate
 * bugfix 修复代理碰到/home路径就会判断出错的问题
 * new 增加一些例如pageCache的工具类
+* new vmarket内置代理升级，移除域名转ip
+* new 支持-v命令查看版本
 
 ###0.0.16###
 
