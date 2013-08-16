@@ -23,7 +23,10 @@ var express = require('express')
     , iconv = require('iconv-lite')
     , colors = require('colors')
     , Env = require('../lib/env')
-    , async = require('async');
+    , async = require('async')
+    , cp = require('child_process')
+    , httpProxy  = require('http-proxy')
+    , httpx_port = 3000;
 
 var checkConfig = function(req, res, next){
     var apps = userCfg.get('apps');
@@ -87,6 +90,9 @@ var processUrl = function(uri, domain,  callback){
 
     callback(uri, matchRule);
 };
+
+var proxy = new httpProxy.RoutingProxy();
+
 app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, res, next){
     //反向代理bugfix
     var host = req.headers['x-forwarded-host'] || req.headers['X-Forwarded-For']|| req.headers.host || '',
@@ -94,66 +100,75 @@ app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, re
 
     if(host.indexOf('127.0.0.1') == -1 && host.indexOf('localhost') == -1
         && (/\.(css|js|ico|png|jpg|swf|less|gif|woff|scss)/.test(req.url) || req.url.indexOf("??") != -1)) {
-        var paths;
-        //combo
-        if(req.url.indexOf('??') != -1) {
-            var p =  url.parse(req.url);
-            paths = comboParser(p.path);
-        } else {
-            paths = [req.url];
-        }
 
-        res.setHeader('Content-type', contentType[path.extname(paths[0].replace(/\?.*/, ''))]);
-
-        async.forEachSeries(paths, function(p, callback){
-            processUrl(p, host, function(uri, rule){
-                if(util.isLocalFile(uri, debug)) {
-                    uri = uri.replace(/\?.*/, '');
-
-                    if(fs.existsSync(uri)) {
-                        var stream = fs.createReadStream(uri);
-
-                        stream.pipe(res, { end: false });
-                        stream.on('end', callback);
-                        stream.on('error', callback);
-                    } else {
-                        res.statusCode = 404;
-//                        res.setHeader('Content-type', 'text/html');
-                        res.write('这个文件真的不存在，404了哦，查找的文件是：' + uri);
-                        res.end();
-                    }
-                } else {
-                    uri = 'http://proxy.taobao.net' + uri;
-                    request.get({
-                        url:  uri,
-                        qs: {
-                            domain: host
-                        },
-                        encoding: null
-                    }, function (error, response, body) {
-                        if(error) {
-                            res.write(error.toString() + ', uri=http://' + uri);
-                        }
-
-                        if(!response) {
-                            console.log('connect fail: ' + uri);
-                        } else if(response.statusCode == 200) {
-                            res.write(body);
-                        } else if(response.statusCode == 404) {
-                            res.statusCode = 404;
-//                            res.setHeader('Content-type', 'text/html');
-                            error && console.log(error);
-                            res.write('<h1>这个文件真的不存在，404了哦</h1>给你看看错误信息<div><textarea style="width:600px;height:400px">' +
-                                (error ? error.toString(): body) +
-                                '</textarea></div><hr>Powered by Vmarket');
-                        }
-                        callback(error);
-                    });
-                }
+        if('httpx' == userCfg.get('proxyType')) {
+            proxy.proxyRequest(req, res, {
+                host: '127.0.0.1',
+                port: httpx_port
             });
-        }, function(err){
-            res.end();
-        });
+        } else {
+            //走本身的代理
+            var paths;
+            //combo
+            if(req.url.indexOf('??') != -1) {
+                var p =  url.parse(req.url);
+                paths = comboParser(p.path);
+            } else {
+                paths = [req.url];
+            }
+
+            res.setHeader('Content-type', contentType[path.extname(paths[0].replace(/\?.*/, ''))]);
+
+            async.forEachSeries(paths, function(p, callback){
+                processUrl(p, host, function(uri, rule){
+                    if(util.isLocalFile(uri, debug)) {
+                        uri = uri.replace(/\?.*/, '');
+
+                        if(fs.existsSync(uri)) {
+                            var stream = fs.createReadStream(uri);
+
+                            stream.pipe(res, { end: false });
+                            stream.on('end', callback);
+                            stream.on('error', callback);
+                        } else {
+                            res.statusCode = 404;
+//                        res.setHeader('Content-type', 'text/html');
+                            res.write('这个文件真的不存在，404了哦，查找的文件是：' + uri);
+                            res.end();
+                        }
+                    } else {
+                        uri = 'http://proxy.taobao.net' + uri;
+                        request.get({
+                            url:  uri,
+                            qs: {
+                                domain: host
+                            },
+                            encoding: null
+                        }, function (error, response, body) {
+                            if(error) {
+                                res.write(error.toString() + ', uri=http://' + uri);
+                            }
+
+                            if(!response) {
+                                console.log('connect fail: ' + uri);
+                            } else if(response.statusCode == 200) {
+                                res.write(body);
+                            } else if(response.statusCode == 404) {
+                                res.statusCode = 404;
+//                            res.setHeader('Content-type', 'text/html');
+                                error && console.log(error);
+                                res.write('<h1>这个文件真的不存在，404了哦</h1>给你看看错误信息<div><textarea style="width:600px;height:400px">' +
+                                    (error ? error.toString(): body) +
+                                    '</textarea></div><hr>Powered by Vmarket');
+                            }
+                            callback(error);
+                        });
+                    }
+                });
+            }, function(err){
+                res.end();
+            });
+        }
     } else {
         next();
     }
@@ -276,11 +291,17 @@ http.createServer(app).listen(app.get('port'), function () {
         }, 300);
     }
 
-//    if('mc' == userCfg.get('proxyType')) {
-//        Arrow.web({
-//            port: 3000
-//        });
-//    }
+    if('httpx' == userCfg.get('proxyType')) {
+        cp.exec('tt -p ' + httpx_port,function(error, stdout, stderr){
+            console.log('stdout: ' + stdout);
+            console.log('stderr: ' + stderr);
+            if (error !== null) {
+                console.log('exec error: ' + error);
+            }
+
+            console.log('http was proxy by [httpx]');
+        });
+    }
 }).on('error', function(err){
     console.log('Status:', 'Fail'.bold.red);
     console.log('Error:', err.message.toString().bold.red, '可能是端口被占用或者权限不足');
