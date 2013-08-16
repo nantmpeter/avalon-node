@@ -1,5 +1,11 @@
 新版本修复了旧bug，新增了不少功能，也可能会有稳定性风险，请酌情升级，[升级指南](https://github.com/czy88840616/avalon-node/wiki/Install
 
+###0.0.18###
+
+* new 接入httpx代理
+* new 增加request信息自动传递到服务器，这样rundata.request.contextPath也可以用了
+* bugfix 动态数据中的跳转修复
+
 ###0.0.17###
 
 * bugfix 修复查找包含的模板逻辑，以前只会查找control.setTemplate

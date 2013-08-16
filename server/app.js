@@ -292,7 +292,7 @@ http.createServer(app).listen(app.get('port'), function () {
     }
 
     if('httpx' == userCfg.get('proxyType')) {
-        cp.exec('tt -p ' + httpx_port,function(error, stdout, stderr){
+        cp.exec('tt -p ' + httpx_port, function(error, stdout, stderr){
             console.log('stdout: ' + stdout);
             console.log('stderr: ' + stderr);
             if (error !== null) {
