@@ -475,7 +475,8 @@ exports.operate = function(req, res){
 exports.proxy = function(req, res){
     var proxyType = userCfg.get('proxyType');
     if('httpx' == userCfg.get('proxyType')) {
-        res.redirect('http://127.0.0.1:3000?from=vmarket');
+        res.setHeader('x-httpx-from', 'vmarket');
+        res.redirect('http://127.0.0.1:3000');
     } else {
         res.render('proxy', {
             proxyDomain:userCfg.get('proxyDomain'),
