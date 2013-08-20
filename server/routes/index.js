@@ -15,6 +15,7 @@ var webx = require('../../lib/webx/webx'),
     innerData = require('../../lib/webx/innerData'),
     Env = require('../../lib/env'),
     request = require('request'),
+    httpProxy = require('http-proxy'),
     url = require('url');
 
 var App = {
@@ -451,6 +452,7 @@ var App = {
     }
 };
 
+var proxy = new httpProxy.RoutingProxy();
 
 exports.index = function(req, res){
   res.render('index', App.load());
@@ -472,8 +474,8 @@ exports.operate = function(req, res){
 
 exports.proxy = function(req, res){
     var proxyType = userCfg.get('proxyType');
-    if(proxyType && proxyType == 'arrow') {
-        res.redirect();
+    if('httpx' == userCfg.get('proxyType')) {
+        res.redirect('http://127.0.0.1:3000?from=vmarket');
     } else {
         res.render('proxy', {
             proxyDomain:userCfg.get('proxyDomain'),
@@ -633,7 +635,7 @@ var Proxy = {
             if(!fs.existsSync(Env.arrowCfg)) {
                 fs.writeFile(Env.arrowCfg, JSON.stringify(newConfig), function(err){
                     if(err) {
-                        cb(null, {success: false, msg: 'Arrow配置创建失败'});
+                        cb(null, {success: false, msg: 'Httpx配置创建失败'});
                     } else {
                         cb(null, {success: true, data: {
                             step: 1
@@ -641,7 +643,7 @@ var Proxy = {
                     }
                 });
             } else {
-                cb(null, {success: true, msg: 'Arrow配置已经存在'});
+                cb(null, {success: true, msg: 'Httpx配置已经存在'});
             }
         } else if(step == 1) {
 
