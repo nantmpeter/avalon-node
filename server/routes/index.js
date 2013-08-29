@@ -16,6 +16,7 @@ var webx = require('../../lib/webx/webx'),
     Env = require('../../lib/env'),
     request = require('request'),
     httpProxy = require('http-proxy'),
+    cp = require('child_process'),
     url = require('url');
 
 var App = {
@@ -474,8 +475,11 @@ exports.operate = function(req, res){
 
 exports.proxy = function(req, res){
     var proxyType = userCfg.get('proxyType');
-    if('httpx' == userCfg.get('proxyType')) {
-        res.setHeader('x-httpx-from', 'vmarket');
+    if(userCfg.get('debug')) {
+        proxyType = 'vmarket';
+    }
+
+    if('httpx' == proxyType) {
         res.redirect('http://127.0.0.1:3000');
     } else {
         res.render('proxy', {
@@ -607,47 +611,98 @@ var Proxy = {
     },
     checkUpdateStatus: function(params, cb){
         var step = params.step || 0;
-        if(step === 0) {
-            var rulePool = {},
-                solutions = {},
-                customSolutionGuid = webUtil.newGuid();
+        if(step == 0) {
+            //安装httpx
+            cp.exec('start npm install httpx -g', function(error, stdout, stderr){
+                if (error) {
 
-            solutions["GLOBAL"] = {
-                "title":"全局场景",
-                "rules":[
-                ]
-            };
+                } else {
 
-            solutions[customSolutionGuid] = {
-                "title":"自定义场景一",
-                "rules":[
-                ]
-            };
-
-            var newConfig = {
-                rulePool: rulePool,
-                settings: settings,
-                solutions: solutions,
-                use: {
-                    '127.0.0.1': customSolutionGuid
                 }
-            };
+            });
 
-            if(!fs.existsSync(Env.arrowCfg)) {
-                fs.writeFile(Env.arrowCfg, JSON.stringify(newConfig), function(err){
+        } else if(step == 1) {
+            if(!fs.existsSync(Env.httpxCfg)) {
+
+                var rulePool = {},
+                    solutions = {},
+                    customSolutionGuid = webUtil.newGuid();
+
+                solutions["GLOBAL"] = {
+                    "title":"全局场景",
+                    "rules":[
+                    ]
+                };
+
+                solutions[customSolutionGuid] = {
+                    "title":"我的Vmarket场景",
+                    "rules":[
+                    ]
+                };
+
+                //填充rulePool
+                var vmarketRules = userCfg.get('rules');
+
+                _.each(vmarketRules, function(rule){
+                    var guid = webUtil.newGuid();
+
+                    rulePool[guid] = {
+                        title:rule.pattern,
+                        pattern:rule.pattern,
+                        target:rule.target,
+                        type: webUtil.isLocalFile(rule.target) ? 1: 0
+                    };
+
+                    //填充solution
+                    solutions[customSolutionGuid]['rules'].push({
+                        id: guid,
+                        enable: rule.enable
+                    });
+                });
+
+                var newConfig = {
+                    rulePool: rulePool,
+                    settings: {
+                        lastCheckTime: new Date().getTime(),
+                        proxyMode: {
+                            url: 'proxy.taobao.net',
+                            map:{}
+                        },
+                        useProxyMode: 'url',
+                        needHelp: true
+                    },
+                    solutions: solutions,
+                    use: {
+                        '127.0.0.1': customSolutionGuid
+                    }
+                };
+
+                fs.writeFile(Env.httpxCfg, JSON.stringify(newConfig), function(err){
                     if(err) {
-                        cb(null, {success: false, msg: 'Httpx配置创建失败'});
+                        cb(null, {success: false, msg: 'httpx配置创建失败，升级中止，请重试'});
                     } else {
                         cb(null, {success: true, data: {
-                            step: 1
+                            step: 2
                         }});
                     }
                 });
             } else {
-                cb(null, {success: true, msg: 'Httpx配置已经存在'});
+                cb(null, {success: true, msg: 'httpx配置已经存在，Vmarket规则将不会覆盖当前httpx的配置', data: {
+                    step: 2
+                }});
             }
-        } else if(step == 1) {
+        } else if(step == 2) {
+            userCfg.set('proxyType', 'httpx');
 
+            userCfg.save(function(err){
+                if(err) {
+                    cb(null, {success:false,msg:'Vmarket配置写入失败，升级中止，请重试'});
+                } else {
+                    cb(null, {success:true, data: {
+                        step: 3
+                    }});
+                }
+            });
         }
     }
 };

@@ -124,27 +124,46 @@ $(function () {
         ev.preventDefault();
 
         var stepText = [
-            '正在第一阶段：创建Arrow配置文件',
+            '正在第一阶段：安装httpx模块',
             '正在第二阶段：迁移原本代理的配置信息',
-            '正在第三阶段：修改Vmarket配置',
+            '正在第三阶段：切换Vmarket代理到httpx',
             '升级完成，请重新启动Vmarket再访问本页面'
         ];
 
-        $('#update-proxy .step').html(stepText[0]);
         var current = 0;
+        $('#update-proxy .step').html(stepText[current]);
 
-        var updateHandler = setInterval(function(){
+        var loopHandler = function(){
+            $('#update-proxy .alert').fadeOut();
+            $('#update-proxy .step').html(stepText[current]);
+            $('#update-proxy .bar').width((current+1)*15);
+
             $.post('/proxy/checkUpdateStatus', {
                 step:current
             },function(data){
                 if(data.success) {
-                    $('#update-proxy .step').html(stepText[data.data.step]);
+                    if(data.msg) {
+                        $('#update-proxy .alert').html(data.msg).fadeIn();
+                    }
+                    current = data.data.step;
                 } else {
                     updateHandler.cancel();
                     updateHandler = null;
-                    $('#update-proxy .step').html(stepText[data.data.step]);
+                    $('#update-proxy .alert').addClass('alert-error').html(stepText[data.data.step]);
                 }
             });
-        }, 1500);
+        };
+
+        var updateHandler = setInterval(loopHandler, 2500);
+
+        loopHandler();
+
+        //超时机制
+        setTimeout(function(){
+            if(updateHandler) {
+                updateHandler.cancel();
+                updateHandler = null;
+            }
+        }, 20000)
     });
 });

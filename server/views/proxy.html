@@ -59,7 +59,7 @@
 <div class="container">
     <div class="page-header">
         <h1 style="display: inline-block;">配置你的Assets Proxy</h1>
-        <a class="btn btn-success" data-toggle="modal" href="#update-proxy" data-backdrop="true">升级到新版代理</a>
+        <a class="btn btn-success" data-toggle="modal" href="#update-proxy" data-backdrop="static">升级到新版代理</a>
     </div>
     <p>
         <span class="badge badge-info"><i class="icon-exclamation-sign icon-white"></i> Tips</span>
@@ -140,8 +140,9 @@
     </div>
     <div class="modal-footer">
         <div class="progress progress-success progress-striped active" style="background-color: #eee">
-            <div class="bar" style="width: 1%;"></div>
+            <div class="bar" style="width: 0;"></div>
         </div>
+        <div class="alert alert-info" style="text-align: left;display: none"></div>
         <span class="step" style="float: left"></span>
         <a href="#" class="btn" data-dismiss="modal">关闭</a>
         <a href="#" class="btn btn-primary J_UpdateProxy">确定升级</a>
