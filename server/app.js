@@ -132,7 +132,6 @@ app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, re
                             stream.on('error', callback);
                         } else {
                             res.statusCode = 404;
-//                        res.setHeader('Content-type', 'text/html');
                             res.write('这个文件真的不存在，404了哦，查找的文件是：' + uri);
                             res.end();
                         }

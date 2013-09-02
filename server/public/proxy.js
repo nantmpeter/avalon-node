@@ -124,46 +124,49 @@ $(function () {
         ev.preventDefault();
 
         var stepText = [
-            '正在第一阶段：安装httpx模块',
+            '正在第一阶段：检测是否安装了httpx模块',
             '正在第二阶段：迁移原本代理的配置信息',
             '正在第三阶段：切换Vmarket代理到httpx',
-            '升级完成，请重新启动Vmarket再访问本页面'
+            '升级完成，确定后将刷新页面，进入httpx'
         ];
 
-        var current = 0;
-        $('#update-proxy .step').html(stepText[current]);
+        var start = new Date().getTime(), end;
 
-        var loopHandler = function(){
-            $('#update-proxy .alert').fadeOut();
-            $('#update-proxy .step').html(stepText[current]);
-            $('#update-proxy .bar').width((current+1)*15);
+        var loopHandler = function(step, data){
+            if(!isNaN(step)) {
+                if(step != stepText.length - 1) {
+                    $('#update-proxy .step').html(stepText[step]);
+                    $('#update-proxy .alert').fadeOut();
+                    $('#update-proxy .bar').width((step+1)*33.4 + '%');
 
-            $.post('/proxy/checkUpdateStatus', {
-                step:current
-            },function(data){
-                if(data.success) {
-                    if(data.msg) {
-                        $('#update-proxy .alert').html(data.msg).fadeIn();
-                    }
-                    current = data.data.step;
+                    $.post('/proxy/checkUpdateStatus', {step: step}, function(data){
+                        if(data.success) {
+                            if(data.msg) {
+                                $('#update-proxy .alert').html(data.msg).fadeIn();
+                            }
+
+                            end = new Date().getTime();
+                            if(end - start < 2000) {
+                                setTimeout(function(){
+                                    start = new Date().getTime();
+                                    loopHandler(data.step, data);
+                                }, 2000 - (end-start));
+                            } else {
+                                start = end;
+                                loopHandler(data.step, data);
+                            }
+                        } else {
+                            $('#update-proxy .alert').addClass('alert-error').html(data.msg).fadeIn();
+                        }
+                    });
                 } else {
-                    updateHandler.cancel();
-                    updateHandler = null;
-                    $('#update-proxy .alert').addClass('alert-error').html(stepText[data.data.step]);
+                    alert(stepText[step]);
+                    location.reload();
                 }
-            });
+            }
         };
 
-        var updateHandler = setInterval(loopHandler, 2500);
+        loopHandler(0);
 
-        loopHandler();
-
-        //超时机制
-        setTimeout(function(){
-            if(updateHandler) {
-                updateHandler.cancel();
-                updateHandler = null;
-            }
-        }, 20000)
     });
 });

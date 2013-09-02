@@ -610,17 +610,16 @@ var Proxy = {
         }
     },
     checkUpdateStatus: function(params, cb){
+        //check httpx
         var step = params.step || 0;
         if(step == 0) {
-            //安装httpx
-            cp.exec('start npm install httpx -g', function(error, stdout, stderr){
-                if (error) {
-
+            cp.exec("tt -v", function (error, stdout, stderr) {
+                if (error !== null) {
+                    cb(null, {success: false, msg: '第一步：当前未找到httpx模块，请在命令行下手动安装httpx模块，安装命令为"npm install httpx -g"，mac用户请sudo，安装完成后再次点击升级。'});
                 } else {
-
+                    cb(null, {success: true,  step: 1});
                 }
             });
-
         } else if(step == 1) {
             if(!fs.existsSync(Env.httpxCfg)) {
 
@@ -677,30 +676,21 @@ var Proxy = {
                     }
                 };
 
-                fs.writeFile(Env.httpxCfg, JSON.stringify(newConfig), function(err){
+                fs.writeFileSync(Env.httpxCfg, JSON.stringify(newConfig), function(err){
                     if(err) {
                         cb(null, {success: false, msg: 'httpx配置创建失败，升级中止，请重试'});
-                    } else {
-                        cb(null, {success: true, data: {
-                            step: 2
-                        }});
                     }
                 });
             } else {
-                cb(null, {success: true, msg: 'httpx配置已经存在，Vmarket规则将不会覆盖当前httpx的配置', data: {
-                    step: 2
-                }});
+                cb(null, {success: true, msg: 'httpx配置已经存在，Vmarket规则将不会覆盖当前httpx的配置', step: 2});
             }
-        } else if(step == 2) {
+        } else if(step ==2) {
             userCfg.set('proxyType', 'httpx');
-
             userCfg.save(function(err){
                 if(err) {
-                    cb(null, {success:false,msg:'Vmarket配置写入失败，升级中止，请重试'});
+                    cb(null, {success:false,msg:'Vmarket代理切换到httpx失败'});
                 } else {
-                    cb(null, {success:true, data: {
-                        step: 3
-                    }});
+                    cb(null, {success:true, step: 3});
                 }
             });
         }
