@@ -676,9 +676,11 @@ var Proxy = {
                     }
                 };
 
-                fs.writeFileSync(Env.httpxCfg, JSON.stringify(newConfig), function(err){
+                fs.writeFile(Env.httpxCfg, JSON.stringify(newConfig), function(err){
                     if(err) {
                         cb(null, {success: false, msg: 'httpx配置创建失败，升级中止，请重试'});
+                    } else {
+                        cb(null, {success: true, step: 2});
                     }
                 });
             } else {

@@ -127,7 +127,7 @@ $(function () {
             '正在第一阶段：检测是否安装了httpx模块',
             '正在第二阶段：迁移原本代理的配置信息',
             '正在第三阶段：切换Vmarket代理到httpx',
-            '升级完成，确定后将刷新页面，进入httpx'
+            '升级完成，请重启vmarket后刷新本页面，进入httpx'
         ];
 
         var start = new Date().getTime(), end;
@@ -161,7 +161,7 @@ $(function () {
                     });
                 } else {
                     alert(stepText[step]);
-                    location.reload();
+                    $('#update-proxy .J_UpdateProxy').html('升级完成');
                 }
             }
         };
