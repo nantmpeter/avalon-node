@@ -25,8 +25,7 @@ var express = require('express')
     , Env = require('../lib/env')
     , async = require('async')
     , cp = require('child_process')
-    , httpProxy  = require('http-proxy')
-    , httpx_port = 3000;
+    , httpProxy  = require('http-proxy');
 
 var checkConfig = function(req, res, next){
     var apps = userCfg.get('apps');
@@ -104,7 +103,7 @@ app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, re
         if('httpx' == userCfg.get('proxyType')) {
             proxy.proxyRequest(req, res, {
                 host: '127.0.0.1',
-                port: httpx_port
+                port: argv.proxyPort || Env.proxyPort
             });
         } else {
             //走本身的代理
@@ -268,7 +267,9 @@ app.get('/list/(:appname)?', user.list);
 app.all('/app/:operate', routes.operate);
 
 app.get('/', routes.index);
-app.get('/proxy', routes.proxy);
+app.get('/proxy', routes.proxy, function(req,res){
+    res.redirect('http://127.0.0.1:' + argv.proxyPort || Env.proxyPort);
+});
 app.post('/proxy/:operate', routes.proxyOperate);
 
 http.createServer(app).listen(app.get('port'), function () {
@@ -291,8 +292,8 @@ http.createServer(app).listen(app.get('port'), function () {
     }
 
     if('httpx' == userCfg.get('proxyType')) {
-        cp.exec('tt --from vmarket -p ' + httpx_port, function(error, stdout, stderr){
-            if (error !== null) {
+        cp.exec('tt --from vmarket -p ' + (argv.proxyPort || Env.proxyPort), function(error, stdout, stderr){
+            if (error) {
                 console.log('httpx error: ' + error.toString().bold.red);
             }
         });

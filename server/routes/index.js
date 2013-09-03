@@ -473,14 +473,14 @@ exports.operate = function(req, res){
     });
 };
 
-exports.proxy = function(req, res){
+exports.proxy = function(req, res, next){
     var proxyType = userCfg.get('proxyType');
     if(userCfg.get('debug')) {
         proxyType = 'vmarket';
     }
 
     if('httpx' == proxyType) {
-        res.redirect('http://127.0.0.1:3000');
+        next();
     } else {
         res.render('proxy', {
             proxyDomain:userCfg.get('proxyDomain'),

@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 var argv = require('optimist')
     .default('port', '80')
+    .default('proxyPort', '8802')
     .alias('p', 'port')
+    .alias('h', 'proxyPort')
 	.argv;
 
 var util = require('util');
