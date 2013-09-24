@@ -475,9 +475,9 @@ exports.operate = function(req, res){
 
 exports.proxy = function(req, res, next){
     var proxyType = userCfg.get('proxyType');
-    if(userCfg.get('debug')) {
-        proxyType = 'vmarket';
-    }
+//    if(userCfg.get('debug')) {
+//        proxyType = 'vmarket';
+//    }
 
     if('httpx' == proxyType) {
         next();
