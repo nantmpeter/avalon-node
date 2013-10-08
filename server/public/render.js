@@ -61,6 +61,9 @@ var toolsList = {
     },
     unicornTool: {
         class:"com.taobao.vcenter.webx.b2b.UnicornPullTool"
+    },
+    dateFormatUtil: {
+        class:"org.apache.commons.lang.time.DateFormatUtils"
     }
 };
 window.tools = window.tools || {};
