@@ -4,6 +4,7 @@
 
 * bugfix 解决当引入不存在module时的报错问题
 * bugfix 解决初始化直接把代理设置成httpx的bug
+* bugfix issue45
 * new 增加一个dateFormatUtil工具类
 * new 新增control也可以执行动态数据的功能
 
