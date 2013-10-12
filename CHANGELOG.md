@@ -4,7 +4,8 @@
 
 * bugfix 解决当引入不存在module时的报错问题
 * bugfix 解决初始化直接把代理设置成httpx的bug
-* bugfix issue45
+* bugfix screen列表过滤 #issue45
+* bugfix b2b目录结构下查找layout的问题 #issue47
 * new 增加一个dateFormatUtil工具类
 * new 新增control也可以执行动态数据的功能
 
