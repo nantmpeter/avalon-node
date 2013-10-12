@@ -1,5 +1,9 @@
 新版本修复了旧bug，新增了不少功能，也可能会有稳定性风险，请酌情升级，[升级指南](https://github.com/czy88840616/avalon-node/wiki/Install
 
+###0.0.20###
+
+* new 增加初始化httpx更新的提示
+
 ###0.0.19###
 
 * bugfix 解决当引入不存在module时的报错问题
