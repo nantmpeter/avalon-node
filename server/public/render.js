@@ -64,6 +64,9 @@ var toolsList = {
     },
     dateFormatUtil: {
         class:"org.apache.commons.lang.time.DateFormatUtils"
+    },
+    emsUtil: {
+        class:"com.taobao.vcenter.webx.MiniCms"
     }
 };
 window.tools = window.tools || {};
