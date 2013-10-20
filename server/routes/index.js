@@ -450,6 +450,49 @@ var App = {
         });
 
         cb(null, {success: true});
+    },
+    addExtraControl: function(params, cb){
+        var extraControlPath = params.value,
+            apps = userCfg.get('apps'),
+            use = userCfg.get('use');
+
+        apps[use].extraControls = apps[use].extraControls || [];
+
+        var modules = apps[use]['subModule'],
+            commonModules = apps['common'],
+            commonModuleFormat = {};
+
+        webx.getControlFormat(value, modules, commonModules, function(result) {
+            if(result) {
+                apps[use].extraControls.push(result);
+                userCfg.save(function(err){
+                    if(err) {
+                        cb(null, {success:false,msg:err});
+                    } else {
+                        cb(null, {success:true, value: result});
+                    }
+                });
+            } else {
+                cb(null, {success:false, msg: '模块结构不正确'});
+            }
+        });
+    },
+    removeExtraControl: function(params, cb){
+        var extraControlPath = params.value,
+            apps = userCfg.get('apps'),
+            use = userCfg.get('use');
+
+        apps[use].extraControls = apps[use].extraControls || [];
+
+        userCfg.save(function(err){
+            if(err) {
+                cb(null, {success:false,msg:err});
+            } else {
+                cb(null, {success:true});
+            }
+        });
+
+        cb(null, {success: true});
     }
 };
 

@@ -127,13 +127,20 @@
                 <p class="help-block">有一些应用（例如拍卖）的control的数据和screen一样，开发把control配置成#parse一样的功能，此项可以让前端无需创建control的数据文件，直接使用screen这一份数据即可</p>
             </div>
         </div>
+        {if type eq 'taobao'}
         <div class="control-group">
             <label class="control-label">指定渲染control</label>
             <div class="controls">
-                <input type="text" />
+                <div id="J_ExtraControlList"><ul></ul></div>
+                <input type="text" id="J_ExtraControlPath" placeholder="比如 vmcommon/s/a.vm" />
+                <button type="button" class="btn btn-primary" id="J_AddExtraControl">
+                    <i class="icon-plus icon-white"></i> 添加
+                </button>
+                <span style="display:none" class="J_Progress"><img src="/loading/loading-2.gif" alt="请稍后"></span>
                 <p class="help-block">有时候页面的依赖的某些control无法被vmarket解析出来而导致页面缺少部分html，这种情况下就需要手动指定所缺少的vm。以便每次渲染时都可以正确的展示</p>
             </div>
         </div>
+        {end}
     </form>
 </div>
 <div id="J_ToolModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

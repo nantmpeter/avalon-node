@@ -326,6 +326,29 @@ $(function () {
                 alert(data.msg);
             }
         });
+    });
 
+    $('#J_AddExtraControl').on('click', function(ev){
+        $.post('/app/addExtraControl', {
+            value: $('#J_ExtraControlPath').val()
+        }, function(data){
+            if(data.success) {
+                $('#J_ExtraControlList ul').append('<li data-path="' + data.value+ '">'+data.value+' <a href="#"><i class="icon-remove"></i></a></li>');
+            } else {
+                alert(data.msg);
+            }
+        });
+    });
+
+    $('.J_ExtraControlList').on('click', '.icon-remove', function(ev){
+        $.post('/app/removeExtraControl', {
+            value: $(ev.currentTarget).parents('li').attr('data-path')
+        }, function(data){
+            if(data.success) {
+                $(ev.currentTarget).parents('li').remove();
+            } else {
+                alert(data.msg);
+            }
+        });
     });
 });

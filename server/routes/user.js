@@ -15,12 +15,14 @@ exports.list = function(req, res){
                 appname:appname,
                 data:apps[appname],
                 urls: result,
+                type: userCfg.get('type'),
                 checkUpgrade: new Date().getTime() - userCfg.get('lastCheckTime') >= 259200000 //大于3天升级
             });
         });
     } else {
         res.render('list', {
             apps:_.keys(apps),
+            type: userCfg.get('type'),
             checkUpgrade: new Date().getTime() - userCfg.get('lastCheckTime') >= 259200000 //大于3天升级
         });
     }
