@@ -329,18 +329,26 @@ $(function () {
     });
 
     $('#J_AddExtraControl').on('click', function(ev){
+        if(!$('#J_ExtraControlPath').val()) {
+            return;
+        }
+
+        $('#J_ExtraControlList').siblings('.J_Progress').show();
         $.post('/app/addExtraControl', {
             value: $('#J_ExtraControlPath').val()
         }, function(data){
+            $('#J_ExtraControlList').siblings('.J_Progress').fadeOut();
             if(data.success) {
                 $('#J_ExtraControlList ul').append('<li data-path="' + data.value+ '">'+data.value+' <a href="#"><i class="icon-remove"></i></a></li>');
+                $('#J_ExtraControlPath').val('');
             } else {
                 alert(data.msg);
             }
         });
     });
 
-    $('.J_ExtraControlList').on('click', '.icon-remove', function(ev){
+    $('#J_ExtraControlList').on('click', '.icon-remove', function(ev){
+        ev.preventDefault();
         $.post('/app/removeExtraControl', {
             value: $(ev.currentTarget).parents('li').attr('data-path')
         }, function(data){

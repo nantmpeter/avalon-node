@@ -452,17 +452,16 @@ var App = {
         cb(null, {success: true});
     },
     addExtraControl: function(params, cb){
-        var extraControlPath = params.value,
+        var extraControlPath = webUtil.trim(params.value),
             apps = userCfg.get('apps'),
             use = userCfg.get('use');
 
         apps[use].extraControls = apps[use].extraControls || [];
 
         var modules = apps[use]['subModule'],
-            commonModules = apps['common'],
-            commonModuleFormat = {};
+            commonModules = userCfg.get('common');
 
-        webx.getControlFormat(value, modules, commonModules, function(result) {
+        webx.getControlFormat(extraControlPath, modules, commonModules, function(result) {
             if(result) {
                 apps[use].extraControls.push(result);
                 userCfg.save(function(err){
@@ -478,11 +477,21 @@ var App = {
         });
     },
     removeExtraControl: function(params, cb){
-        var extraControlPath = params.value,
+        var extraControlPath = webUtil.trim(params.value),
             apps = userCfg.get('apps'),
             use = userCfg.get('use');
 
         apps[use].extraControls = apps[use].extraControls || [];
+        var newList = [];
+        _.each(apps[use].extraControls, function(extraControl){
+            if(extraControl != extraControlPath) {
+                newList.push(extraControl);
+            }
+        });
+
+        apps[use].extraControls = newList;
+
+        userCfg.set('apps', apps);
 
         userCfg.save(function(err){
             if(err) {

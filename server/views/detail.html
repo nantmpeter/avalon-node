@@ -131,8 +131,12 @@
         <div class="control-group">
             <label class="control-label">指定渲染control</label>
             <div class="controls">
-                <div id="J_ExtraControlList"><ul></ul></div>
-                <input type="text" id="J_ExtraControlPath" placeholder="比如 vmcommon/s/a.vm" />
+                <div id="J_ExtraControlList"><ul>
+                    {foreach extraControl in extraControlList}
+                    <li data-path="{extraControl}">{extraControl} <a href="#"><i class="icon-remove"></i></a></li>
+                    {end}
+                </ul></div>
+                <input type="text" id="J_ExtraControlPath" placeholder="比如 vmcommon/s/3.2/css.vm" />
                 <button type="button" class="btn btn-primary" id="J_AddExtraControl">
                     <i class="icon-plus icon-white"></i> 添加
                 </button>

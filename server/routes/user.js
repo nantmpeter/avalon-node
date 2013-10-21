@@ -16,6 +16,7 @@ exports.list = function(req, res){
                 data:apps[appname],
                 urls: result,
                 type: userCfg.get('type'),
+                extraControlList: apps[appname]['extraControls'],
                 checkUpgrade: new Date().getTime() - userCfg.get('lastCheckTime') >= 259200000 //大于3天升级
             });
         });
