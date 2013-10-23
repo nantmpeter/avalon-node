@@ -173,6 +173,7 @@ app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, re
 });
 
 app.all('/*.(*htm*|do)', checkConfig, function(req, res, next){
+    console.log(req.url);
     //这里编码就取当前使用的应用编码
     var useApp = userCfg.get('use'),
         config = util.merge({}, userCfg.get('apps')[useApp]);
