@@ -5,8 +5,9 @@
  */
 
 var express = require('express')
-    , routes = require('./routes')
-    , user = require('./routes/user')
+    , webRoute = require('./routes/webRoute')
+    , appApiRoute = require('./routes/api/appRoute')
+    , proxyApiRoute = require('./routes/api/proxyRoute')
     , http = require('http')
     , path = require('path')
     , render = require('../lib/render')
@@ -25,7 +26,7 @@ var express = require('express')
     , Env = require('../lib/env')
     , async = require('async')
     , cp = require('child_process')
-    , httpProxy  = require('http-proxy');
+    , httpProxy = require('http-proxy');
 
 var checkConfig = function(req, res, next){
     var apps = userCfg.get('apps');
@@ -91,7 +92,7 @@ var processUrl = function(uri, domain,  callback){
 };
 
 var proxy = new httpProxy.RoutingProxy();
-
+//具体业务逻辑
 app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, res, next){
     //反向代理bugfix
     var host = req.headers['x-forwarded-host'] || req.headers['X-Forwarded-For']|| req.headers.host || '',
@@ -173,7 +174,6 @@ app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', function(req, re
 });
 
 app.all('/*.(*htm*|do)', checkConfig, function(req, res, next){
-    console.log(req.url);
     //这里编码就取当前使用的应用编码
     var useApp = userCfg.get('use'),
         config = util.merge({}, userCfg.get('apps')[useApp]);
@@ -241,37 +241,17 @@ app.get('*.snap', checkConfig, function(req, res, next){
     }
 });
 
-app.get('*.vm', checkConfig, function(req, res, next){
-    var useApp = userCfg.get('use');
-    var config = util.merge({}, userCfg.get('apps')[useApp]);
-    config.type = userCfg.get('type');
-    config.common = userCfg.get('common');
-
-    render.getInfo({
-        app: useApp,
-        config: config,
-        path: req.params[0]
-    }, function(err, obj) {
-        if(err || _.isEmpty(obj)) {
-            res.render('404', {
-                app: useApp
-            });
-        } else {
-            res.render('info', util.merge(obj, {
-                checkUpgrade: new Date().getTime() - userCfg.get('lastCheckTime') >= 259200000 //大于3天升级
-            }));
-        }
-    });
-});
-
-app.get('/list/(:appname)?', user.list);
-app.all('/app/:operate', routes.operate);
-
-app.get('/', routes.index);
-app.get('/proxy', routes.proxy, function(req,res){
+//页面渲染
+app.get('*.vm', checkConfig, webRoute.detail);
+app.get('/list/(:appname)?', webRoute.list);
+app.get('/', webRoute.index);
+app.get('/proxy', webRoute.proxy, function(req,res){
     res.redirect('http://127.0.0.1:' + argv.proxyPort || Env.proxyPort);
 });
-app.post('/proxy/:operate', routes.proxyOperate);
+
+//接口api
+app.all('/app/:operate', appApiRoute.operate);
+app.post('/proxy/:operate', proxyApiRoute.proxyOperate);
 
 http.createServer(app).listen(app.get('port'), function () {
     userCfg.init({
