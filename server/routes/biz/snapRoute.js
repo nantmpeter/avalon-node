@@ -1,9 +1,9 @@
 ﻿/*
  * WEB ROUTES
  */
-var webUtil = require('../../lib/util/util'),
-    userCfg = require('../../lib/config/userConfig'),
-    snapCfg = require('../../lib/config/snapConfig'),
+var webUtil = require('../../../lib/util/util'),
+    userCfg = require('../../../lib/config/userConfig'),
+    snapCfg = require('../../../lib/config/snapConfig'),
     request = require('request'),
     iconv = require('iconv-lite');
 

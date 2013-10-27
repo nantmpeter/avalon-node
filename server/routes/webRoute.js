@@ -11,6 +11,8 @@ var webx = require('../../lib/webx/webx'),
     render = require('../../lib/render'),
     innerData = require('../../lib/webx/innerData'),
     request = require('request'),
+    Env = require('../../lib/env'),
+    argv = require('optimist').argv,
     url = require('url');
 
 var checkUpdate = function () {
@@ -88,7 +90,7 @@ exports.proxy = function (req, res, next) {
     var proxyType = userCfg.get('proxyType');
 
     if ('httpx' == proxyType) {
-        next();
+        res.redirect('http://127.0.0.1:' + argv.proxyPort || Env.proxyPort);
     } else {
         res.render('proxy', {
             proxyDomain: userCfg.get('proxyDomain'),

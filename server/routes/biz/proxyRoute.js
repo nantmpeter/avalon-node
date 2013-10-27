@@ -47,7 +47,7 @@ var processUrl = function(uri, domain,  callback){
     callback(uri, matchRule);
 };
 
-exports.proxy = function (req, res, next) {
+exports.index = function (req, res, next) {
     //反向代理bugfix
     var host = req.headers['x-forwarded-host'] || req.headers['X-Forwarded-For']|| req.headers.host || '',
         debug = userCfg.get('debug');

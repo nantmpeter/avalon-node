@@ -10,21 +10,18 @@ var express = require('express')
     , proxyApiRoute = require('./routes/api/proxyRoute')
     , proxyBizRoute = require('./routes/biz/proxyRoute')
     , snapBizRoute = require('./routes/biz/snapRoute')
+    , htmBizRoute = require('./routes/biz/htmRoute')
     , http = require('http')
     , path = require('path')
-    , render = require('../lib/render')
     , userCfg = require('../lib/config/userConfig')
     , snapCfg = require('../lib/config/snapConfig')
     , argv = require('optimist').argv
     , webUtil = require('../lib/util/util')
     , cons = require('consolidate')
     , _ = require('underscore')
-    , url = require('url')
-    , fs = require('fs')
     , request = require('request')
     , colors = require('colors')
     , Env = require('../lib/env')
-    , async = require('async')
     , cp = require('child_process');
 
 var app = express();
@@ -60,42 +57,15 @@ var checkConfig = function(req, res, next){
 };
 
 //具体业务逻辑
-app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.proxy);
-app.all('/*.(*htm*|do)', checkConfig, function(req, res, next){
-    //这里编码就取当前使用的应用编码
-    var useApp = userCfg.get('use'),
-        config = webUtil.merge({}, userCfg.get('apps')[useApp]);
-
-    //真正的渲染
-    config.type = userCfg.get('type');
-    config.common = userCfg.get('common');
-
-    var template = render.parse({
-        app: useApp,
-        config: config,
-        path: req.params[0],
-        api: userCfg.get('api'),
-        parameters: req.method == 'GET' ? req.query : req.body
-    });
-
-    if(template) {
-        template.render(req, res);
-    } else {
-        res.render('404', {
-            app:useApp,
-            url: req.url
-        });
-    }
-});
+app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
+app.all('/*.(*htm*|do)', checkConfig, htmBizRoute.index);
 app.get('*.snap', checkConfig, snapBizRoute.index);
 
 //页面渲染
 app.get('*.vm', checkConfig, webRoute.detail);
 app.get('/list/(:appname)?', webRoute.list);
 app.get('/', webRoute.index);
-app.get('/proxy', webRoute.proxy, function(req,res){
-    res.redirect('http://127.0.0.1:' + argv.proxyPort || Env.proxyPort);
-});
+app.get('/proxy', webRoute.proxy);
 
 //接口api
 app.all('/app/:operate', appApiRoute.operate);
