@@ -3,6 +3,7 @@
  */
 var webx = require('../../../lib/webx/webx'),
     webUtil = require('../../../lib/util/util'),
+    fileUtil = require('../../../lib/util/fileUtil'),
     path = require('path'),
     fs = require('fs'),
     _ = require('underscore'),
@@ -11,6 +12,7 @@ var webx = require('../../../lib/webx/webx'),
     render = require('../../../lib/render'),
     innerData = require('../../../lib/webx/innerData'),
     request = require('request'),
+    querystring = require('querystring'),
     url = require('url');
 
 //app系列
