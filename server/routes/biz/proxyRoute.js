@@ -1,18 +1,18 @@
 ﻿/*
  * WEB ROUTES
  */
-var webUtil = require('../../lib/util/util'),
+var webUtil = require('../../../lib/util/util'),
     path = require('path'),
     fs = require('fs'),
     _ = require('underscore'),
-    userCfg = require('../../lib/config/userConfig'),
-    snapCfg = require('../../lib/config/snapConfig'),
-    render = require('../../lib/render'),
+    userCfg = require('../../../lib/config/userConfig'),
+    snapCfg = require('../../../lib/config/snapConfig'),
+    render = require('../../../lib/render'),
     request = require('request'),
     url = require('url'),
     comboParser = require('combo-url-parser'),
     async = require('async'),
-    Env = require('../lib/env'),
+    Env = require('../../../lib/env'),
     argv = require('optimist').argv,
     proxy = new httpProxy.RoutingProxy();
 

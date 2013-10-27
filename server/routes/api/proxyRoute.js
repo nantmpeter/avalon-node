@@ -9,8 +9,8 @@ var webUtil = require('../../../lib/util/util'),
     snapCfg = require('../../../lib/config/snapConfig'),
     render = require('../../../lib/render'),
     request = require('request'),
-    url = require('url');
-
+    url = require('url'),
+    Env = require('../../../lib/env');
 
 //代理系列
 var Proxy = {
