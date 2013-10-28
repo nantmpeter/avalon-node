@@ -14,6 +14,7 @@ var webUtil = require('../../../lib/util/util'),
     async = require('async'),
     Env = require('../../../lib/env'),
     argv = require('optimist').argv,
+    httpProxy = require('http-proxy'),
     proxy = new httpProxy.RoutingProxy();
 
 var contentType = {

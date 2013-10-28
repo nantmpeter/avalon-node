@@ -9,7 +9,6 @@ var express = require('express')
     , appApiRoute = require('./routes/api/appRoute')
     , proxyApiRoute = require('./routes/api/proxyRoute')
     , proxyBizRoute = require('./routes/biz/proxyRoute')
-    , snapBizRoute = require('./routes/biz/snapRoute')
     , htmBizRoute = require('./routes/biz/htmRoute')
     , http = require('http')
     , path = require('path')
@@ -58,8 +57,7 @@ var checkConfig = function(req, res, next){
 
 //具体业务逻辑
 app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
-app.all('/*.(*htm*|do)', checkConfig, htmBizRoute.index);
-app.get('*.snap', checkConfig, snapBizRoute.index);
+app.all('/*.(*htm*|do|snap|php*)', checkConfig, htmBizRoute.index);
 
 //页面渲染
 app.get('*.vm', checkConfig, webRoute.detail);
@@ -98,7 +96,7 @@ http.createServer(app).listen(app.get('port'), function () {
                 if (error) {
                     console.log('[Info]'.cyan + ': httpx可更新  => ' + r['dist-tags'].latest.yellow.bold + ',请使用 ' + '(sudo)npm update httpx -g'.bold + ' 进行更新');
                 } else {
-                    if(stdout != r['dist-tags'].latest) {
+                    if(webUtil.trim(stdout) != webUtil.trim(r['dist-tags'].latest)) {
                         console.log('[Info]'.cyan + ': httpx可更新 ' + stdout.replace(/\s/g, '').yellow.bold
                             + ' => ' + r['dist-tags'].latest.yellow.bold + ',请使用 ' + '(sudo)npm update httpx -g'.bold + ' 进行更新');
                     }
