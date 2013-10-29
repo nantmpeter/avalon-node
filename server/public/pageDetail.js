@@ -183,18 +183,23 @@ $(function () {
     $('#myTab a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
-//        location.hash = $(this).attr('href');
     });
 
-    //active tab by hash
-//    var hash = location.hash;
-//    hash && $('#myTab a[href=' + hash + ']').tab('show');
+    var jsonEditor = ace.edit("J_JSONKeysEditor");
+    jsonEditor.getSession().setMode("ace/mode/json");
+    jsonEditor.getSession().setUseWorker(false);
+    jsonEditor.setReadOnly(true);
 
-    var editor = ace.edit("J_Editor");
-//    editor.setTheme("ace/theme/monokai");
-    editor.getSession().setMode("ace/mode/json");
-    editor.getSession().setUseWorker(false);
-    editor.setReadOnly(true);
+    var vmEditor = ace.edit("J_VMKeysEditor");
+    vmEditor.getSession().setMode("ace/mode/json");
+    vmEditor.getSession().setUseWorker(false);
+    vmEditor.setReadOnly(true);
+
+    $('#J_JSONKeysRadio, #J_VMKeysRadio').click(function(ev){
+        $('#J_JSONKeysEditor').parent().toggle();
+        $('#J_VMKeysEditor').parent().toggle();
+        $('#J_VMKeysRadio').parent().next().fadeToggle();
+    });
 
     var staticEditor = ace.edit("J_StaticEditor");
     staticEditor.getSession().setMode("ace/mode/json");

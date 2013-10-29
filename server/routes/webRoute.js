@@ -43,7 +43,7 @@ exports.list = function (req, res) {
         apps = userCfg.get('apps');
     if (appname && apps[appname]) {
         webx.getScreenUrl(apps[appname], function (err, result) {
-            res.render('detail', {
+            res.render('appDetail', {
                 appname: appname,
                 data: apps[appname],
                 urls: result,
@@ -53,7 +53,7 @@ exports.list = function (req, res) {
             });
         });
     } else {
-        res.render('list', {
+        res.render('appList', {
             apps: _.keys(apps),
             type: userCfg.get('type'),
             checkUpgrade: checkUpdate()
@@ -78,7 +78,7 @@ exports.detail = function (req, res) {
                 app: useApp
             });
         } else {
-            res.render('info', webUtil.merge(obj, {
+            res.render('pageDetail', webUtil.merge(obj, {
                 checkUpgrade: checkUpdate()
             }));
         }
