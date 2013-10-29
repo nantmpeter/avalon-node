@@ -3,13 +3,14 @@
  */
 var webx = require('../../lib/webx/webx'),
     webUtil = require('../../lib/util/util'),
+    webxUtil = require('../../lib/util/webxUtil'),
     path = require('path'),
     fs = require('fs'),
     _ = require('underscore'),
     userCfg = require('../../lib/config/userConfig'),
     snapCfg = require('../../lib/config/snapConfig'),
-    render = require('../../lib/render'),
     innerData = require('../../lib/webx/innerData'),
+    info = require('../../lib/webx/info'),
     request = require('request'),
     Env = require('../../lib/env'),
     argv = require('optimist').argv,
@@ -68,10 +69,10 @@ exports.detail = function (req, res) {
     config.type = userCfg.get('type');
     config.common = userCfg.get('common');
 
-    render.getInfo({
+    info.collectInfo({
         app: useApp,
         config: config,
-        path: req.params[0]
+        target: webxUtil.formatUrl(req.url)
     }, function (err, obj) {
         if (err || _.isEmpty(obj)) {
             res.render('404', {

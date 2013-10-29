@@ -49,14 +49,13 @@
     </div>
 </div>
 <div class="container">
-    <div class="page-header"><h1>应用:{appname}</h1></div>
+    <div class="page-header"><h1 style="display: inline-block">应用:{appname}</h1><span style="margin-left: 20px">默认Module：{if data.defaultModule} {data.defaultModule}{else}无 {end}</span></div>
     <input type="hidden" id="J_CurrentApp" value="{appname}"/>
     <h2>工具类</h2>
     <form class="form-horizontal" autocomplete="on">
         <div class="control-group">
             <div class="controls controls-row">
-                <button type="button" class="btn btn-primary" id="J_AddTools" rel="popover" title="添加一个工具类"
-                        data-content="And here's some amazing content. It's very engaging. right?">
+                <button type="button" class="btn btn-primary" id="J_AddTools" title="添加一个工具类">
                     <i class="icon-wrench icon-white"></i> 添加一个工具类
                 </button>
             </div>
@@ -101,6 +100,9 @@
                     {foreach Url in module.value.detail}
                     <li>
                         {if module.key eq 'noModule'}
+                        <a href="/{Url.hrefPath}" title="位置：{Url.realPath}" target="_blank" class="{if not Url.hasData}muted {end}J_Tooltip">{{domain:port}}/{Url.showPath}</a>
+                        <a href="/{Url.detailPath}" style="display: none" class="J_ScreenPopup J_Tooltip" target="_blank" title="模板详情"><i class="icon-list-alt"></i>查看详情</a>
+                        {elif module.key eq data.defaultModule}
                         <a href="/{Url.hrefPath}" title="位置：{Url.realPath}" target="_blank" class="{if not Url.hasData}muted {end}J_Tooltip">{{domain:port}}/{Url.showPath}</a>
                         <a href="/{Url.detailPath}" style="display: none" class="J_ScreenPopup J_Tooltip" target="_blank" title="模板详情"><i class="icon-list-alt"></i>查看详情</a>
                         {else}

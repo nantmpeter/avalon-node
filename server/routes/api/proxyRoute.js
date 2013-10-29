@@ -7,7 +7,6 @@ var webUtil = require('../../../lib/util/util'),
     _ = require('underscore'),
     userCfg = require('../../../lib/config/userConfig'),
     snapCfg = require('../../../lib/config/snapConfig'),
-    render = require('../../../lib/render'),
     request = require('request'),
     url = require('url'),
     Env = require('../../../lib/env');

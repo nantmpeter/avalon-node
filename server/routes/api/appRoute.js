@@ -3,14 +3,15 @@
  */
 var webx = require('../../../lib/webx/webx'),
     webUtil = require('../../../lib/util/util'),
+    webxUtil = require('../../../lib/util/webxUtil'),
     fileUtil = require('../../../lib/util/fileUtil'),
     path = require('path'),
     fs = require('fs'),
     _ = require('underscore'),
     userCfg = require('../../../lib/config/userConfig'),
     snapCfg = require('../../../lib/config/snapConfig'),
-    render = require('../../../lib/render'),
     innerData = require('../../../lib/webx/innerData'),
+    Template = require('../../../lib/webx/template'),
     request = require('request'),
     querystring = require('querystring'),
     url = require('url');
@@ -302,13 +303,14 @@ var App = {
 
         var guid = webUtil.createSnapGuid(uri);
 
-        var template = render.parse({
+        var template = new Template({
             app: appname,
             config: webUtil.merge(apps[appname], {
                 common: common,
                 type: type
             }),
             path: uri,
+            target: webxUtil.formatUrl(uri),
             api: userCfg.get('api'),
             parameters: parameters
         });
