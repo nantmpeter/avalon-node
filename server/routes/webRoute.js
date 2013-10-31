@@ -34,6 +34,7 @@ exports.index = function (req, res) {
         debug: userCfg.get('debug'),
         api: userCfg.get('api'),
         apis: innerData.data.apis,
+        isWindows: webUtil.isWindows(),
         checkUpgrade: checkUpdate()
     });
 };

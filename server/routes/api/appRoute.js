@@ -140,6 +140,30 @@ var App = {
             });
         }
     },
+    setphp: function(params, cb){
+        var key = params.key,
+            value = params.value;
+
+        value = value.replace(/(\\|\/)$/, '');
+        value = value ? path.resolve(value):value;
+
+        var common = userCfg.get('common');
+
+        if(value == common[key]) {
+            //cache
+            cb(null, {success:true});
+        } else {
+            common[key] = value;
+            userCfg.set('common', common);
+            userCfg.save(function(err){
+                if(err) {
+                    cb(null, {success:false,msg:err});
+                } else {
+                    cb(null, {success:true});
+                }
+            });
+        }
+    },
     setopen: function(params, cb) {
         var open = params.open === 'true';
 

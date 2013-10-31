@@ -258,6 +258,23 @@ $(function(){
     });
 
     $('#J_SwitchAppTypeModalTrigger').tooltip();
+
+    $('#J_PhpPath').blur(function(ev){
+        if($(this).val() === $(this).prev().val()) {
+            return;
+        }
+
+        $.post('/app/setphp', {
+            key: $(this).attr('name'),
+            value: $(this).val()
+        }, function(data){
+            if(data.success) {
+                location.reload();
+            } else {
+                alert(data.error);
+            }
+        });
+    });
 });
 
 Global = {
