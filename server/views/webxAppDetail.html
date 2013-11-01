@@ -49,7 +49,10 @@
     </div>
 </div>
 <div class="container">
-    <div class="page-header"><h1 style="display: inline-block">应用:{appname}</h1><span style="margin-left: 20px">默认Module：{if data.defaultModule} {data.defaultModule}{else}无 {end}</span></div>
+    <div class="page-header">
+        <h1 style="display: inline-block">{appname}</h1>
+        <img src="http://gtms01.alicdn.com/tps/i1/T1zwPTFateXXazZ6Zy-187-101.gif" style="height: 60px;float: right">
+    </div>
     <input type="hidden" id="J_CurrentApp" value="{appname}"/>
     <h2>工具类</h2>
     <form class="form-horizontal" autocomplete="on">
@@ -78,15 +81,6 @@
         </div>
     </form>
     <hr>
-    <h2>更新应用</h2>
-    <form class="form-horizontal" autocomplete="on">
-        <div class="control-group">
-            <div class="controls">
-                <a id="J_UpdateApp" href="#" data-loading-text="搜索当前目录结构的变化中，请稍后..." class="btn btn-primary"><i class="icon-refresh icon-white"></i> 更新应用</a>
-            </div>
-        </div>
-    </form>
-    <hr>
     <h2>模块screen列表</h2>
     <form class="form-horizontal" autocomplete="on">
         <div class="control-group J_ScreenList">
@@ -95,7 +89,7 @@
                 <span class="badge badge-info">有数据 （包含*.json和*.js文件）</span>
                 <span class="badge badge-important">命名错误，vm文件按驼峰规则命名</span>
                 {foreach module in urls}
-                <h3>Module: {if module.key eq 'noModule'}/{else}{module.key}{end}</h3>
+                <h3>{if data.defaultModule eq module.key}<i class="icon-home" style="vertical-align: middle;"></i>{end}{if module.key eq 'noModule'}/{else}{module.key}{end}</h3>
                 <ul>
                     {foreach Url in module.value.detail}
                     <li>
@@ -117,8 +111,39 @@
         </div>
     </form>
     <hr>
-    <h2>其他配置</h2>
+    <h2>应用配置</h2>
     <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label">更新应用</label>
+            <div class="controls">
+                <a id="J_UpdateApp" href="#" data-loading-text="搜索当前目录结构的变化中，请稍后..." class="btn btn-primary"><i class="icon-refresh icon-white"></i> 更新应用</a>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">默认module</label>
+            <div class="controls">
+                <select id="J_SubModuleSelect">
+                    <option value="">无</option>
+                    {foreach subModule in data.subModule}
+                    <option value="{subModule.key}" {if data.defaultModule eq subModule.key}selected{end}>{subModule.key}</option>
+                    {end}
+                </select>
+                <a href="https://gist.github.com/czy88840616/7264419" target="_blank"><i class="icon-question-sign"></i>什么是默认module</a>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">模板编码：</label>
+            <div class="controls">
+                <label class="radio inline" style="min-width: 100px;">
+                    <input type="radio" name="encoding" class="J_Encoding" value="gbk" {if data.encoding eq 'gbk'} checked{end}>
+                    GBK （默认）
+                </label>
+                <label class="radio inline" style="min-width: 100px;">
+                    <input type="radio" name="encoding" class="J_Encoding" value="utf8" {if data.encoding eq 'utf8'} checked{end}>
+                    UTF-8
+                </label>
+            </div>
+        </div>
         <div class="control-group">
             <label class="control-label">数据互通</label>
             <div class="controls">
@@ -134,7 +159,7 @@
             <label class="control-label">指定渲染control</label>
             <div class="controls">
                 <div id="J_ExtraControlList"><ul>
-                    {foreach extraControl in extraControlList}
+                    {foreach extraControl in data.extraControlList}
                     <li data-path="{extraControl}">{extraControl} <a href="#"><i class="icon-remove"></i></a></li>
                     {end}
                 </ul></div>

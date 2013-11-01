@@ -30,6 +30,7 @@ exports.index = function (req, res) {
         commonValues: !userCfg.get('type') ? [] : innerData.data.companys[userCfg.get('type')].common,
         open: userCfg.get('open'),
         type: userCfg.get('type'),
+        env: userCfg.get('env'),
         companys: _.keys(innerData.data.companys),
         debug: userCfg.get('debug'),
         api: userCfg.get('api'),
@@ -44,8 +45,8 @@ exports.list = function (req, res) {
     var appname = req.params.appname,
         apps = userCfg.get('apps');
     if (appname && apps[appname]) {
-        webx.getScreenUrl(apps[appname], function (err, result) {
-            res.render('appDetail', {
+        if(apps[appname].type && apps[appname].type == 'php') {
+            res.render('phpAppDetail', {
                 appname: appname,
                 data: apps[appname],
                 urls: result,
@@ -53,7 +54,17 @@ exports.list = function (req, res) {
                 extraControlList: apps[appname]['extraControls'],
                 checkUpgrade: checkUpdate()
             });
-        });
+        } else {
+            webx.getScreenUrl(apps[appname], function (err, result) {
+                res.render('webxAppDetail', {
+                    appname: appname,
+                    data: apps[appname],
+                    urls: result,
+                    type: userCfg.get('type'),
+                    checkUpgrade: checkUpdate()
+                });
+            });
+        }
     } else {
         res.render('appList', {
             apps: _.keys(apps),

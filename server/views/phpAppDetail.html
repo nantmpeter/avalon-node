@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head><title>{appname}应用详情</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/cosmo/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="/bootstrap/cosmo/docs.css">
+    <link rel="stylesheet" href="/ztree/css/zTreeStyle/zTreeStyle.css">
+    <script type="text/javascript" src="/jquery/jquery-1.8.1.min.js"></script>
+    <style type="text/css">
+        .tooltip-inner {{
+            white-space:pre-wrap;
+            max-width:none;
+        }}
+    </style>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/">Vmarket</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li><a href="/">首页</a></li>
+                    <li><a href="/list">应用列表</a></li>
+                    <li><a href="/proxy">Assets代理</a></li>
+                    <li><a href="https://github.com/czy88840616/avalon-node/wiki" target="_blank">文档</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            其他
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="http://czy88840616.github.io/avalon-node/quickstart" target="_blank">QucikStart</a></li>
+                            <li><a href="https://github.com/czy88840616/avalon-node/blob/master/CHANGELOG.md" target="_blank">ChangeLog</a></li>
+                            <li><a href="http://v.taobao.net" target="_blank">VMarket</a></li>
+                            <li><a href="https://github.com/czy88840616/avalon-node" target="_blank">查看源码</a></li>
+                            <li><a href="https://github.com/czy88840616/avalon-node/issues/new" target="_blank">向我提意见</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="page-header">
+        <h1 style="display: inline-block">{appname}</h1><span style="margin-left: 20px">默认Module：{if data.defaultModule} {data.defaultModule}{else}无 {end}</span>
+        <img src="http://gtms01.alicdn.com/tps/i1/T1OFIsFf4cXXXwE72_-310-163.jpg" style="height: 60px;float: right">
+    </div>
+    <input type="hidden" id="J_CurrentApp" value="{appname}"/>
+    <h2>工具类</h2>
+    <form class="form-horizontal" autocomplete="on">
+        <div class="control-group">
+            <div class="controls controls-row">
+                <button type="button" class="btn btn-primary" id="J_AddTools" title="添加一个工具类">
+                    <i class="icon-wrench icon-white"></i> 添加一个工具类
+                </button>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <div class="btn-toolbar toolslist" id="J_ToolslistConfirm" style="border: 2px dashed #5192FB;min-height: 20px;padding:10px;">
+                    <div id="J_ToolContainer" style="display: none"></div>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <p>
+                    <span class="badge badge-warning">Warning</span>
+                    如果待添加的变量和默认工具类相同，无需手动添加，URL类型除外，查询默认工具类和默认变量：<a
+                        href="http://v.taobao.net/doc.html#toolslist" target="_blank">工具类列表</a>
+                </p>
+            </div>
+        </div>
+    </form>
+    <hr>
+    <h2>更新应用</h2>
+    <form class="form-horizontal" autocomplete="on">
+        <div class="control-group">
+            <div class="controls">
+                <a id="J_UpdateApp" href="#" data-loading-text="搜索当前目录结构的变化中，请稍后..." class="btn btn-primary"><i class="icon-refresh icon-white"></i> 更新应用</a>
+            </div>
+        </div>
+    </form>
+    <hr>
+    <h2>模块screen列表</h2>
+    <form class="form-horizontal" autocomplete="on">
+        <div class="control-group J_ScreenList">
+            <div class="controls controls-row">
+                <span class="badge badge-inverse">无数据</span>
+                <span class="badge badge-info">有数据 （包含*.json和*.js文件）</span>
+                <span class="badge badge-important">命名错误，vm文件按驼峰规则命名</span>
+                {foreach module in urls}
+                <h3>Module: {if module.key eq 'noModule'}/{else}{module.key}{end}</h3>
+                <ul>
+                    {foreach Url in module.value.detail}
+                    <li>
+                        {if module.key eq 'noModule'}
+                        <a href="/{Url.hrefPath}" title="位置：{Url.realPath}" target="_blank" class="{if not Url.hasData}muted {end}J_Tooltip">{{domain:port}}/{Url.showPath}</a>
+                        <a href="/{Url.detailPath}" style="display: none" class="J_ScreenPopup J_Tooltip" target="_blank" title="模板详情"><i class="icon-list-alt"></i>查看详情</a>
+                        {elif module.key eq data.defaultModule}
+                        <a href="/{Url.hrefPath}" title="位置：{Url.realPath}" target="_blank" class="{if not Url.hasData}muted {end}J_Tooltip">{{domain:port}}/{Url.showPath}</a>
+                        <a href="/{Url.detailPath}" style="display: none" class="J_ScreenPopup J_Tooltip" target="_blank" title="模板详情"><i class="icon-list-alt"></i>查看详情</a>
+                        {else}
+                        <a href="/{module.key}/{Url.hrefPath}" title="位置：{Url.realPath}" target="_blank" class="{if not Url.hasData}muted {end}J_Tooltip">{{domain:port}}/{module.key}/{Url.showPath}</a>
+                        <a href="/{module.key}/{Url.detailPath}" style="display: none" class="J_ScreenPopup J_Tooltip" target="_blank" title="模板详情"><i class="icon-list-alt"></i>查看详情</a>
+                        {end}
+                    </li>
+                    {end}
+                </ul>
+                {end}
+            </div>
+        </div>
+    </form>
+    <hr>
+    <h2>其他配置</h2>
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label">数据互通</label>
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" id="J_IsControlGlobal" value="1" {if data.isControlGlobal eq 'true'} checked {end}>
+                    screen数据依旧可以被control所访问
+                </label>
+                <p class="help-block">有一些应用（例如拍卖）的control的数据和screen一样，开发把control配置成#parse一样的功能，此项可以让前端无需创建control的数据文件，直接使用screen这一份数据即可</p>
+            </div>
+        </div>
+        {if type eq 'taobao'}
+        <div class="control-group">
+            <label class="control-label">指定渲染control</label>
+            <div class="controls">
+                <div id="J_ExtraControlList"><ul>
+                    {foreach extraControl in extraControlList}
+                    <li data-path="{extraControl}">{extraControl} <a href="#"><i class="icon-remove"></i></a></li>
+                    {end}
+                </ul></div>
+                <input type="text" id="J_ExtraControlPath" placeholder="比如 vmcommon/s/3.2/css.vm" />
+                <button type="button" class="btn btn-primary" id="J_AddExtraControl">
+                    <i class="icon-plus icon-white"></i> 添加
+                </button>
+                <span style="display:none" class="J_Progress"><img src="/loading/loading-2.gif" alt="请稍后"></span>
+                <p class="help-block">有时候页面的依赖的某些control无法被vmarket解析出来而导致页面缺少部分html，这种情况下就需要手动指定所缺少的vm。以便每次渲染时都可以正确的展示</p>
+            </div>
+        </div>
+        {end}
+    </form>
+</div>
+<div id="J_ToolModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">添加工具类</h3>
+    </div>
+    <div class="modal-body">
+        <p>
+            <span class="badge badge-warning">Warning</span>
+            添加完后点击【保存】才会真正的保存
+        </p>
+        <div class="btn-toolbar toolslist" id="J_ToolslistMock"></div>
+        <hr>
+        <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" style="width: 60px;">工具类</label>
+            <div class="controls" style="margin-left: 80px;">
+                <select class="span4" id="J_ToolsList">
+                    <option value="">-------- please select a tool --------</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="width: 60px;">变量名</label>
+            <div class="controls" style="margin-left: 80px;">
+                <input class="span4" type="text" placeholder="这里填写模板上的变量" id="J_ToolsKey">
+                <a href="#" rel="tooltip" title="假如模板为$rateServer.setTarget(xx)，那么变量就为rateServer" class="J_Tooltip"><i class="icon-question-sign"></i></a>
+            </div>
+        </div>
+        <div id="J_ToolsProps"></div>
+        <div class="controls-group">
+            <label class="control-label" style="width: 60px;"></label>
+            <div class="controls" style="margin-left: 80px;">
+                <button class="btn btn-primary" type="button" id="J_ToolsUse"><i class="icon-ok icon-white"></i>添加</button>
+                <div class="alert alert-error" style="margin-top:20px;display: none;" id="J_ToolsError"></div>
+            </div>
+        </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">取消</button>
+        <button class="btn btn-primary" id="J_BtnConfirm">保存</button>
+    </div>
+</div>
+<div class="footer">
+    <div class="container">
+        <hr>
+        <p>Code by <a href="mailto:zhangting@taobao.com">zhangting@taobao.com</a></p>
+        <p>Code licensed under <a href="https://github.com/czy88840616/avalon-node/blob/master/LICENSE.md" target="_blank">MIT</a></p>
+    </div>
+</div>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/ztree/js/jquery.ztree.all-3.4.min.js"></script>
+<script type="text/javascript" src="/render.js"></script>
+{if checkUpgrade}
+<script type="text/javascript" src="/upgrade.js"></script>
+{end}
+</body>
+</html>

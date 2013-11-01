@@ -52,15 +52,6 @@
         </h1>
     </div>
     <form class="form-horizontal well">
-        {foreach comValue in commonValues}
-        <div class="control-group">
-            <label class="control-label">{comValue.key}：</label>
-            <div class="controls">
-                <input type="hidden" value="{common[comValue.key]}" class="J_OldCommonValue"/>
-                <input type="text"  name="{comValue.key}" class="input-xxlarge J_CommonValue" value="{common[comValue.key]}" placeholder="{comValue.value}">
-            </div>
-        </div>
-        {end}
         <div class="control-group">
             <label class="control-label">当前应用：</label>
             <div class="controls">
@@ -79,8 +70,9 @@
                 </select>
 
                 <div class="pull-left J_AppOperate" {if not apps.length}style="display: none"{end}>
-                <a class="btn btn-primary" href="/list/{use}" id="J_DetailApp"><i class="icon-zoom-in icon-white"></i> 查看</a>
-                <a class="btn btn-primary" id="J_RemoveApp"><i class="icon-remove icon-white"></i> 删除</a>
+                <a class="btn btn-primary" href="/list/{use}" id="J_DetailApp"><i class="icon-zoom-in icon-white"></i> 查看当前应用</a>
+                <a class="btn btn-primary" id="J_RemoveApp"><i class="icon-remove icon-white"></i> 删除当前应用</a>
+                </div>
             </div>
             <div class="modal hide fade J_RemoveAppAlertModal">
                 <div class="modal-body">
@@ -96,54 +88,62 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="control-group">
-        <div class="controls">
-            <a id="J_AddNewApp" href="#addNewAppModal" class="btn btn-primary">添加一个应用</a>
-            <p style="margin-top: 10px">
-                <span class="badge badge-info"><i class="icon-exclamation-sign icon-white"></i> Tips</span>
-                VMarket基于开发同学的<code>svn应用目录</code>来管理模板，默认以应用根目录名作为应用名。
-            </p>
+        <div class="control-group">
+            <div class="controls">
+                <a id="J_AddNewApp" href="#addNewAppModal" class="btn btn-primary"><i class="icon-white icon-plus"></i>添加一个应用</a>
+                <p style="margin-top: 10px">
+                    <span class="badge badge-info"><i class="icon-exclamation-sign icon-white"></i> Tips</span>
+                    VMarket基于开发同学的<code>svn应用目录</code>来管理模板，默认以应用根目录名作为应用名。
+                </p>
+            </div>
         </div>
-    </div>
-<hr>
-{if debug}
-<div class="control-group">
-    <label class="control-label" for="J_Engine">选择API：</label>
-    <div class="controls">
-        <select id="J_Engine" class="input-xlarge">
-            {foreach apiLine in apis}
-            <option value="{apiLine.value}" {if api eq apiLine.value}selected{end}>{apiLine.key}</option>
-            {end}
-        </select>
-    </div>
-</div>
-{end}
-<div class="control-group">
-    <label class="control-label" for="J_AutoOpen">是否自启动：</label>
-    <div class="controls">
-        <label class="checkbox">
-            <input type="checkbox" id="J_AutoOpen" value="1" {if open}checked{end}>
-            启动客户端时自动打开浏览器
-        </label>
-    </div>
-</div>
-<div class="control-group">
-    <label class="control-label" for="J_PhpPath">php本地环境：</label>
-    <div class="controls">
-        {if isWindows}
-        <input type="hidden" value="" />
-        <input type="text" id="J_PhpPath" name="phppath" class="input-xxlarge" placeholder="window没有自带php环境，请填写本地安装的php目录，即php.exe所在的目录" />
-        <p style="margin-top: 10px">
-            <span class="badge badge-info"><i class="icon-exclamation-sign icon-white"></i> Tips</span>
-            请使用php5.4及以上版本，也可以直接下载: <a target="_blank" href="http://yunpan.taobao.com/share/link/728a4c2i4">点击下载</a>
-        </p>
-        {else}
-        <label style="padding-top: 5px;">mac自带php环境，无需指定</label>
+        <hr>
+        {if debug}
+        <div class="control-group">
+            <label class="control-label" for="J_Engine">选择API：</label>
+            <div class="controls">
+                <select id="J_Engine" class="input-xlarge">
+                    {foreach apiLine in apis}
+                    <option value="{apiLine.value}" {if api eq apiLine.value}selected{end}>{apiLine.key}</option>
+                    {end}
+                </select>
+            </div>
+        </div>
         {end}
-    </div>
-</div>
-</form>
+        {foreach comValue in commonValues}
+        <div class="control-group">
+            <label class="control-label">{comValue.key}：</label>
+            <div class="controls">
+                <input type="hidden" value="{common[comValue.key]}" class="J_OldCommonValue"/>
+                <input type="text"  name="{comValue.key}" class="input-xxlarge J_CommonValue" value="{common[comValue.key]}" placeholder="{comValue.value}">
+            </div>
+        </div>
+        {end}
+        <div class="control-group">
+            <label class="control-label" for="J_PhpPath">php本地环境：</label>
+            <div class="controls">
+                {if isWindows}
+                <input type="hidden" value="{env.php}" />
+                <input type="text" id="J_PhpPath" name="php" class="input-xxlarge" placeholder="window没有自带php环境，请填写本地安装的php目录，即php.exe所在的目录" value="{env.php}" />
+                <p style="margin-top: 10px">
+                    <span class="badge badge-info"><i class="icon-exclamation-sign icon-white"></i> Tips</span>
+                    请使用php5.4及以上版本，也可以直接下载: <a target="_blank" href="http://yunpan.taobao.com/share/link/728a4c2i4">点击下载</a>
+                </p>
+                {else}
+                <label style="padding-top: 5px;">mac自带php环境，无需指定</label>
+                {end}
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="J_AutoOpen">是否自启动：</label>
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="checkbox" id="J_AutoOpen" value="1" {if open}checked{end}>
+                    启动客户端时自动打开浏览器
+                </label>
+            </div>
+        </div>
+    </form>
 <div id="addNewAppModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
      style="width: 800px; margin-left: -400px;" class="modal hide fade">
     <div class="modal-header">
@@ -168,28 +168,6 @@
                     <div style="width: 470px; display: none;" id="J_RefreshProgress">
                         <img src="/loading/loading-1.gif" alt="">
                     </div>
-                </div>
-            </div>
-            <div class="control-group">
-                <label for="approot" class="control-label">模板编码：</label>
-                <div class="controls">
-                    <label class="radio inline" style="min-width: 100px;">
-                        <input type="radio" name="encoding" id="J_Encoding" value="gbk" checked>
-                        GBK （默认）
-                    </label>
-                    <label class="radio inline" style="min-width: 100px;">
-                        <input type="radio" name="encoding" value="utf8">
-                        UTF-8
-                    </label>
-                </div>
-            </div>
-            <div class="control-group" style="display: none">
-                <label for="approot" class="control-label">默认Module：</label>
-                <div class="controls">
-                    <select id="J_SubModuleSelect">
-                        <option value="">无</option>
-                    </select>
-                    <a href="https://github.com/czy88840616/avalon-node/wiki/Configuration" target="_blank"><i class="icon-question-sign"></i>这是什么</a>
                 </div>
             </div>
             <div class="control-group" style="display: none">

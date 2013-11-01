@@ -359,4 +359,28 @@ $(function () {
             }
         });
     });
+
+    $('#J_SubModuleSelect').on('change', function(ev){
+        $.post('/app/setDefaultModule', {
+            defaultModule: $(this).val()
+        }, function(data){
+            if(data.success) {
+                location.reload();
+            } else {
+                alert(data.msg);
+            }
+        });
+    });
+
+    $('.J_Encoding').on('change', function(ev){
+        $.post('/app/setEncoding', {
+            encoding: $(this).val()
+        }, function(data){
+            if(data.success) {
+                location.reload();
+            } else {
+                alert(data.msg);
+            }
+        });
+    });
 });

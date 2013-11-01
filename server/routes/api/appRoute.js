@@ -61,15 +61,13 @@ var App = {
     },
     add: function(params, cb){
         var root = params.root,
-            encoding = params.encoding,
-            type = userCfg.get('type'),
-            defaultModule = params.defaultModule;
+            type = userCfg.get('type');
 
         root = root.replace(/(\\|\/)$/, '');
         webx.getConfig(root, type, function(err, result) {
             var appName = path.basename(root);
-            result.encoding = encoding;
-            result.defaultModule = defaultModule;
+            result.encoding = 'gbk';
+            result.defaultModule = '';
 
             var apps = userCfg.get('apps');
             if(apps[appName]) {
@@ -147,14 +145,56 @@ var App = {
         value = value.replace(/(\\|\/)$/, '');
         value = value ? path.resolve(value):value;
 
-        var common = userCfg.get('common');
+        var env = userCfg.get('env');
 
-        if(value == common[key]) {
+        if(value == env[key]) {
             //cache
             cb(null, {success:true});
         } else {
-            common[key] = value;
-            userCfg.set('common', common);
+            env[key] = value;
+            userCfg.set('env', env);
+            userCfg.save(function(err){
+                if(err) {
+                    cb(null, {success:false,msg:err});
+                } else {
+                    cb(null, {success:true});
+                }
+            });
+        }
+    },
+    setDefaultModule: function(params, cb){
+        var defaultModule = params.defaultModule;
+
+        var apps = userCfg.get('apps'),
+            use = userCfg.get('use');
+
+        if(defaultModule == apps[use].defaultModule) {
+            //cache
+            cb(null, {success:true});
+        } else {
+            apps[use].defaultModule = defaultModule;
+            userCfg.set('apps', apps);
+            userCfg.save(function(err){
+                if(err) {
+                    cb(null, {success:false,msg:err});
+                } else {
+                    cb(null, {success:true});
+                }
+            });
+        }
+    },
+    setEncoding: function(params, cb){
+        var encoding = params.encoding || 'gbk';
+
+        var apps = userCfg.get('apps'),
+            use = userCfg.get('use');
+
+        if(encoding == apps[use].encoding) {
+            //cache
+            cb(null, {success:true});
+        } else {
+            apps[use].encoding = encoding;
+            userCfg.set('apps', apps);
             userCfg.save(function(err){
                 if(err) {
                     cb(null, {success:false,msg:err});
