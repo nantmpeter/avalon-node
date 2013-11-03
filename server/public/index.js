@@ -98,10 +98,15 @@ $(function(){
             }
 
             data = data.data;
-            $.fn.zTree.init($("#configTree"), {
-                showLine:true,
-                checkable:true
-            }, data.tree);
+            if(data.type == 'webx') {
+                $.fn.zTree.init($("#configTree"), {
+                    showLine:true,
+                    checkable:true
+                }, data.tree);
+            }
+
+            $('#J_DirType').val(data.type);
+
             $('#J_RefreshProgress').fadeOut(function(){
                 $("#configTree").parents('.control-group').show();
                 $("#configTree").fadeIn();
@@ -132,7 +137,8 @@ $(function(){
 
         $(this).button('loading');
         $.post('/app/add', {
-            root:$('#approot').val()
+            root:$('#approot').val(),
+            type:$('#J_DirType').val()
         }, function(data) {
             if(data.success) {
                 $("#J_Apps").empty();

@@ -20,19 +20,39 @@ var webx = require('../../../lib/webx/webx'),
 
 var App = {
     find: function(params, cb) {
-        var type = userCfg.get('type');
+        var type = userCfg.get('type'),
+            root = params.root;
 
-        webx.getConfig(params.root, type, function(err, result) {
+        webxUtil.isWebxDirectory(root, type, function(err, result){
             if(err) {
                 cb(JSON.stringify({success:false, msg:err}));
-            } else {
-                var data = {
-                    tree:webUtil.json2Tree(result, {isLeafParent: true}),
-                    subModule:_.keys(result['subModule'])
-                };
-                cb(err, JSON.stringify({success:true, data:data}));
+            } else  {
+                if(result) {
+                    webx.getConfig(params.root, type, function(err, result) {
+                        if(err) {
+                            cb(JSON.stringify({success:false, msg:err}));
+                        } else {
+                            var data = {
+                                tree:webUtil.json2Tree(result, {isLeafParent: true}),
+                                subModule:_.keys(result['subModule']),
+                                type: 'webx'
+                            };
+                            cb(err, JSON.stringify({success:true, data:data}));
+                        }
+                    });
+                } else {
+                    //普通目录
+                    if(fs.existsSync(path.resolve(root))) {
+                        cb(err, JSON.stringify({success:true, data:{
+                            type: 'php'
+                        }}));
+                    } else {
+                        cb(JSON.stringify({success:false, msg:'路径不存在'}));
+                    }
+                }
             }
         });
+
     },
     load: function() {
         return {
@@ -61,22 +81,45 @@ var App = {
     },
     add: function(params, cb){
         var root = params.root,
+            appType = params.type,
             type = userCfg.get('type');
 
         root = root.replace(/(\\|\/)$/, '');
-        webx.getConfig(root, type, function(err, result) {
+
+        if(appType == 'webx') {
+            webx.getConfig(root, type, function(err, result) {
+                var appName = path.basename(root);
+                result.encoding = 'gbk';
+                result.defaultModule = '';
+
+                var apps = userCfg.get('apps');
+                if(apps[appName]) {
+                    //合并新旧同名应用
+                    var oldapp = apps[appName];
+                    result.tools = oldapp.tools || {};
+                }
+
+                apps[appName] = result;
+                apps[appName].type = appType;
+                userCfg.set('apps', apps);
+                userCfg.set('use', appName);
+                userCfg.save(function(err){
+                    if(err) {
+                        cb(null, {success:false,msg:err});
+                    } else {
+                        cb(null, {success:true});
+                    }
+                });
+            });
+        } else {
+            //其他类型
             var appName = path.basename(root);
-            result.encoding = 'gbk';
-            result.defaultModule = '';
-
             var apps = userCfg.get('apps');
-            if(apps[appName]) {
-                //合并新旧同名应用
-                var oldapp = apps[appName];
-                result.tools = oldapp.tools || {};
-            }
+            apps[appName] = {
+                type: appType,
+                root: root
+            };
 
-            apps[appName] = result;
             userCfg.set('apps', apps);
             userCfg.set('use', appName);
             userCfg.save(function(err){
@@ -86,7 +129,8 @@ var App = {
                     cb(null, {success:true});
                 }
             });
-        });
+        }
+
     },
     remove: function(params, cb){
         var appName = params.appName;
