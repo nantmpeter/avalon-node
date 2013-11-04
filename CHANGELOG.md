@@ -4,9 +4,7 @@
 
 * bugfix 修正了初始化版本检测提示的问题
 * new 模板变量结构显示两种方案
-* new 在应用详情增加默认module的展示
-* optimize 代码层级大量重构
-* optimize 应用详情在默认module的URL中去除module名
+* optimize 应用详情增加默认module，编码的修改，去除添加应用时的选项，调整部分界面
 
 ###0.0.20###
 

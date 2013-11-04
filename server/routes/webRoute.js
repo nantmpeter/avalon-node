@@ -4,6 +4,7 @@
 var webx = require('../../lib/webx/webx'),
     webUtil = require('../../lib/util/util'),
     webxUtil = require('../../lib/util/webxUtil'),
+    phpBiz = require('../../lib/php/phpBiz'),
     path = require('path'),
     fs = require('fs'),
     _ = require('underscore'),
@@ -46,13 +47,13 @@ exports.list = function (req, res) {
         apps = userCfg.get('apps');
     if (appname && apps[appname]) {
         if(apps[appname].type && apps[appname].type == 'php') {
-            res.render('phpAppDetail', {
-                appname: appname,
-                data: apps[appname],
-                urls: result,
-                type: userCfg.get('type'),
-                extraControlList: apps[appname]['extraControls'],
-                checkUpgrade: checkUpdate()
+            phpBiz.getFileList(apps[appname], function(err, result){
+                res.render('phpAppDetail', {
+                    appname: appname,
+                    data: apps[appname],
+                    urls: result,
+                    checkUpgrade: checkUpdate()
+                });
             });
         } else {
             webx.getScreenUrl(apps[appname], function (err, result) {
@@ -60,7 +61,6 @@ exports.list = function (req, res) {
                     appname: appname,
                     data: apps[appname],
                     urls: result,
-                    type: userCfg.get('type'),
                     checkUpgrade: checkUpdate()
                 });
             });

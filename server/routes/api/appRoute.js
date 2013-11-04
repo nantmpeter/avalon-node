@@ -5,6 +5,7 @@ var webx = require('../../../lib/webx/webx'),
     webUtil = require('../../../lib/util/util'),
     webxUtil = require('../../../lib/util/webxUtil'),
     fileUtil = require('../../../lib/util/fileUtil'),
+    phpController = require('../../../lib/php/phpController'),
     path = require('path'),
     fs = require('fs'),
     _ = require('underscore'),
@@ -19,40 +20,34 @@ var webx = require('../../../lib/webx/webx'),
 //app系列
 
 var App = {
-    find: function(params, cb) {
+    anyalyze: function(params, cb) {
         var type = userCfg.get('type'),
-            root = params.root;
+            root = params.root,
+            guessAppType = webUtil.anyalyzeAppType(root);
 
-        webxUtil.isWebxDirectory(root, type, function(err, result){
-            if(err) {
-                cb(JSON.stringify({success:false, msg:err}));
-            } else  {
-                if(result) {
-                    webx.getConfig(params.root, type, function(err, result) {
-                        if(err) {
-                            cb(JSON.stringify({success:false, msg:err}));
-                        } else {
-                            var data = {
-                                tree:webUtil.json2Tree(result, {isLeafParent: true}),
-                                subModule:_.keys(result['subModule']),
-                                type: 'webx'
-                            };
-                            cb(err, JSON.stringify({success:true, data:data}));
-                        }
-                    });
+        if(guessAppType == 'webx') {
+            webx.getConfig(params.root, type, function(err, result) {
+                if(err) {
+                    cb(JSON.stringify({success:false, msg:err}));
                 } else {
-                    //普通目录
-                    if(fs.existsSync(path.resolve(root))) {
-                        cb(err, JSON.stringify({success:true, data:{
-                            type: 'php'
-                        }}));
-                    } else {
-                        cb(JSON.stringify({success:false, msg:'路径不存在'}));
-                    }
+                    var data = {
+                        tree:webUtil.json2Tree(result, {isLeafParent: true}),
+                        subModule:_.keys(result['subModule']),
+                        type: guessAppType
+                    };
+                    cb(err, JSON.stringify({success:true, data:data}));
                 }
+            });
+        } else {
+            //普通目录
+            if(fs.existsSync(path.resolve(root))) {
+                cb(null, JSON.stringify({success:true, data:{
+                    type: guessAppType
+                }}));
+            } else {
+                cb(JSON.stringify({success:false, msg:'路径不存在'}));
             }
-        });
-
+        }
     },
     load: function() {
         return {
@@ -150,6 +145,12 @@ var App = {
     change: function(params, cb) {
         var appName = params.appName;
         userCfg.set('use', appName);
+
+        var apps = userCfg.get('apps');
+        if(apps[appName] && apps[appName].type == 'php') {
+            phpController.refreshPhpEnv();
+        }
+
         userCfg.save(function(err){
             if(err) {
                 cb(null, {success:false,msg:err});
@@ -207,10 +208,11 @@ var App = {
         }
     },
     setDefaultModule: function(params, cb){
-        var defaultModule = params.defaultModule;
+        var defaultModule = params.defaultModule,
+            currentAppName = params.appName;
 
         var apps = userCfg.get('apps'),
-            use = userCfg.get('use');
+            use = currentAppName || userCfg.get('use');
 
         if(defaultModule == apps[use].defaultModule) {
             //cache
@@ -228,10 +230,11 @@ var App = {
         }
     },
     setEncoding: function(params, cb){
-        var encoding = params.encoding || 'gbk';
+        var encoding = params.encoding || 'gbk',
+            currentAppName = params.appName;
 
         var apps = userCfg.get('apps'),
-            use = userCfg.get('use');
+            use = currentAppName || userCfg.get('use');
 
         if(encoding == apps[use].encoding) {
             //cache
@@ -544,8 +547,9 @@ var App = {
     },
     updateControlGlobal: function(params, cb){
         var isControlGlobal = params.isControlGlobal,
+            currentAppName = params.appName,
             apps = userCfg.get('apps'),
-            use = userCfg.get('use');
+            use = currentAppName || userCfg.get('use');
 
         apps[use].isControlGlobal = isControlGlobal;
 
@@ -561,8 +565,9 @@ var App = {
     },
     addExtraControl: function(params, cb){
         var extraControlPath = webUtil.trim(params.value),
+            currentAppName = params.appName,
             apps = userCfg.get('apps'),
-            use = userCfg.get('use');
+            use = currentAppName || userCfg.get('use');
 
         apps[use].extraControls = apps[use].extraControls || [];
 
@@ -586,8 +591,9 @@ var App = {
     },
     removeExtraControl: function(params, cb){
         var extraControlPath = webUtil.trim(params.value),
+            currentAppName = params.appName,
             apps = userCfg.get('apps'),
-            use = userCfg.get('use');
+            use = currentAppName || userCfg.get('use');
 
         apps[use].extraControls = apps[use].extraControls || [];
         var newList = [];

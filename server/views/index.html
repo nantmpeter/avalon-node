@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head><title>配置你的VMarket</title>
-    <link rel="stylesheet" href="/bootstrap/cosmo/bootstrap.min.css">
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.min.css">
-    <link rel="stylesheet" href="/bootstrap/cosmo/docs.css">
-    <link rel="stylesheet" href="/ztree/css/zTreeStyle/zTreeStyle.css">
-    <script type="text/javascript" src="/jquery/jquery-1.8.1.min.js"></script>
+    <link rel="stylesheet" href="/vmarket/bootstrap/cosmo/bootstrap.min.css">
+    <link rel="stylesheet" href="/vmarket/bootstrap/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="/vmarket/bootstrap/cosmo/docs.css">
+    <link rel="stylesheet" href="/vmarket/ztree/css/zTreeStyle/zTreeStyle.css">
+    <script type="text/javascript" src="/vmarket/jquery/jquery-1.8.1.min.js"></script>
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -46,7 +46,7 @@
         <h1>配置你的VMarket Client
             {if type}
             <a href="#" id="J_SwitchAppTypeModalTrigger" data-toggle="modal" data-target="#J_SwitchAppTypeModal" rel="tooltip" data-placement="right" data-original-title="选择应用符合的目录结构">
-                <img src="/type/{type}.jpg" alt="" style="height: 30px">
+                <img src="/vmarket/type/{type}.jpg" alt="" style="height: 30px">
             </a>
             {end}
         </h1>
@@ -167,14 +167,14 @@
                         由于您的应用比较大，分析需要较长时间，请耐心等待。。。
                     </div>
                     <div style="width: 470px; display: none;" id="J_RefreshProgress">
-                        <img src="/loading/loading-1.gif" alt="">
+                        <img src="/vmarket/loading/loading-1.gif" alt="">
                     </div>
                 </div>
             </div>
             <div class="control-group" style="display: none">
                 <label for="" class="control-label">预览：</label>
                 <div class="controls">
-                    <ul id="configTree" style="display: none;" class="ztree"></ul>
+                    <ul id="configTree" class="ztree"></ul>
                 </div>
             </div>
         </form>
@@ -182,7 +182,7 @@
     <div class="modal-footer"><span style="display: none;margin-right: 10px;"
                                     class="alert alert-error">系统错误，请重试</span>
         <button data-dismiss="modal" aria-hidden="true" class="btn">取消</button>
-        <button id="J_SaveConfig" data-loading-text="保存中..." class="btn btn-primary disabled">保存改动</button>
+        <button id="J_SaveConfig" data-loading-text="保存中..." class="btn disabled">保存改动</button>
     </div>
 </div>
 <div class="modal hide fade" id="J_SwitchAppTypeModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -198,7 +198,7 @@
         {foreach company in companys}
         <label class="radio">
             <input type="radio" name="appType" value="{company}" style="margin-top: 16px;" {if company eq type}checked{end}>
-            <img src="/type/{company}.jpg" alt="">
+            <img src="/vmarket/type/{company}.jpg" alt="">
         </label>
         {end}
         <p class="pull-right">
@@ -215,11 +215,11 @@
         <p>Code licensed under <a href="https://github.com/czy88840616/avalon-node/blob/master/LICENSE.md" target="_blank">MIT</a></p>
     </div>
 </div>
-<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/ztree/js/jquery.ztree.all-3.4.min.js"></script>
-<script type="text/javascript" src="/index.js"></script>
+<script type="text/javascript" src="/vmarket/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/vmarket/ztree/js/jquery.ztree.all-3.4.min.js"></script>
+<script type="text/javascript" src="/vmarket/index.js"></script>
 {if checkUpgrade}
-<script type="text/javascript" src="/upgrade.js"></script>
+<script type="text/javascript" src="/vmarket/upgrade.js"></script>
 {end}
 {if not type}
 <script type="text/javascript">

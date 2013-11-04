@@ -64,6 +64,7 @@ $(function(){
     $('#J_RefreshDir').click(function(e){
         e.preventDefault();
         $.fn.zTree.destroy('configTree');
+        $('#J_SaveConfig').removeClass('btn-primary');
 
         $('#approot').parents('.control-group').removeClass('error').removeClass('success');
         if(!checkValid($('#approot').val())) {
@@ -83,7 +84,7 @@ $(function(){
             }
         }, 7000);
 
-        $.post('/app/find', {
+        $.post('/app/anyalyze', {
             root:$('#approot').val()
         }, function(data) {
             timeChecker.cancel();
@@ -108,13 +109,12 @@ $(function(){
             $('#J_DirType').val(data.type);
 
             $('#J_RefreshProgress').fadeOut(function(){
-                $("#configTree").parents('.control-group').show();
-                $("#configTree").fadeIn();
+                data.type == 'webx' && $("#configTree").parents('.control-group').show();
                 $('#J_BusyTip').removeClass('in').fadeOut();
             });
 
             $('#J_RefreshDir').button('reset');
-            $('#J_SaveConfig').button('reset');
+            $('#J_SaveConfig').button('reset').addClass('btn-primary');
         });
     });
 
@@ -130,7 +130,7 @@ $(function(){
     //save config
     $('#J_SaveConfig').click(function(e){
         e.preventDefault();
-        if(!checkValid($('#approot').val()) || !$('#configTree').html()){
+        if(!checkValid($('#approot').val()) || !$(this).hasClass('btn-primary')){
             alert('请先填写应用根目录并等待系统分析目录完成');
             return;
         }

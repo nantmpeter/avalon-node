@@ -55,10 +55,6 @@ var checkConfig = function(req, res, next){
     }
 };
 
-//具体业务逻辑
-app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
-app.all('/*.(*htm*|do|snap|php*)', checkConfig, htmBizRoute.index);
-
 //页面渲染
 app.get('*.vm', checkConfig, webRoute.detail);
 app.get('/list/(:appname)?', webRoute.list);
@@ -68,6 +64,10 @@ app.get('/proxy', webRoute.proxy);
 //接口api
 app.all('/app/:operate', appApiRoute.operate);
 app.post('/proxy/:operate', proxyApiRoute.proxyOperate);
+
+//具体业务逻辑
+app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
+app.all('/*', checkConfig, htmBizRoute.index);
 
 http.createServer(app).listen(app.get('port'), function () {
     userCfg.init({

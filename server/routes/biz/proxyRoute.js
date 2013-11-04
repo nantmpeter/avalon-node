@@ -13,6 +13,7 @@ var webUtil = require('../../../lib/util/util'),
     async = require('async'),
     Env = require('../../../lib/env'),
     argv = require('optimist').argv,
+    phpRender = require('../../../lib/render/phpRender'),
     httpProxy = require('http-proxy'),
     proxy = new httpProxy.RoutingProxy();
 
@@ -123,6 +124,18 @@ exports.index = function (req, res, next) {
             });
         }
     } else {
-        next();
+        if(/^\/vmarket\/.*/.test(req.url)) {
+            next();
+        } else {
+            var apps = userCfg.get('apps'),
+                use = userCfg.get('use');
+
+            if(apps[use].type == 'php') {
+                phpRender.render(req, res);
+            } else {
+                next();
+            }
+        }
+
     }
 };

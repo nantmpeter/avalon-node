@@ -318,7 +318,8 @@ $(function () {
 
     $('#J_IsControlGlobal').on('click', function(ev){
         $.post('/app/updateControlGlobal', {
-            isControlGlobal:!!$(ev.target).attr('checked')
+            isControlGlobal:!!$(ev.target).attr('checked'),
+            appName: $('#J_CurrentApp').val()
         }, function(data){
             if(data.success) {
                 location.reload();
@@ -335,7 +336,8 @@ $(function () {
 
         $('#J_ExtraControlList').siblings('.J_Progress').show();
         $.post('/app/addExtraControl', {
-            value: $('#J_ExtraControlPath').val()
+            value: $('#J_ExtraControlPath').val(),
+            appName: $('#J_CurrentApp').val()
         }, function(data){
             $('#J_ExtraControlList').siblings('.J_Progress').fadeOut();
             if(data.success) {
@@ -350,7 +352,8 @@ $(function () {
     $('#J_ExtraControlList').on('click', '.icon-remove', function(ev){
         ev.preventDefault();
         $.post('/app/removeExtraControl', {
-            value: $(ev.currentTarget).parents('li').attr('data-path')
+            value: $(ev.currentTarget).parents('li').attr('data-path'),
+            appName: $('#J_CurrentApp').val()
         }, function(data){
             if(data.success) {
                 $(ev.currentTarget).parents('li').remove();
@@ -362,7 +365,8 @@ $(function () {
 
     $('#J_SubModuleSelect').on('change', function(ev){
         $.post('/app/setDefaultModule', {
-            defaultModule: $(this).val()
+            defaultModule: $(this).val(),
+            appName: $('#J_CurrentApp').val()
         }, function(data){
             if(data.success) {
                 location.reload();
@@ -374,7 +378,8 @@ $(function () {
 
     $('.J_Encoding').on('change', function(ev){
         $.post('/app/setEncoding', {
-            encoding: $(this).val()
+            encoding: $(this).val(),
+            appName: $('#J_CurrentApp').val()
         }, function(data){
             if(data.success) {
                 location.reload();
