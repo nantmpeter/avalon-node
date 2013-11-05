@@ -121,6 +121,10 @@ var App = {
                 if(err) {
                     cb(null, {success:false,msg:err});
                 } else {
+                    if(appType == 'php') {
+                        phpController.refreshPhpEnv();
+                    }
+
                     cb(null, {success:true});
                 }
             });
