@@ -90,18 +90,20 @@ http.createServer(app).listen(app.get('port'), function () {
 
     if('httpx' == userCfg.get('proxyType')) {
         request.get('http://registry.npmjs.org/httpx', function (error, response, body) {
-            var r = JSON.parse(body);
+            if(!error) {
+                var r = JSON.parse(body);
 
-            cp.exec('tt -v', function(error, stdout, stderr){
-                if (error) {
-                    console.log('[Info]'.cyan + ': httpx可更新  => ' + r['dist-tags'].latest.yellow.bold + ',请使用 ' + '(sudo)npm update httpx -g'.bold + ' 进行更新');
-                } else {
-                    if(webUtil.trim(stdout) != webUtil.trim(r['dist-tags'].latest)) {
-                        console.log('[Info]'.cyan + ': httpx可更新 ' + stdout.replace(/\s/g, '').yellow.bold
-                            + ' => ' + r['dist-tags'].latest.yellow.bold + ',请使用 ' + '(sudo)npm update httpx -g'.bold + ' 进行更新');
+                cp.exec('tt -v', function(error, stdout, stderr){
+                    if (error) {
+                        console.log('[Info]'.cyan + ': httpx可更新  => ' + r['dist-tags'].latest.yellow.bold + ',请使用 ' + '(sudo)npm update httpx -g'.bold + ' 进行更新');
+                    } else {
+                        if(webUtil.trim(stdout) != webUtil.trim(r['dist-tags'].latest)) {
+                            console.log('[Info]'.cyan + ': httpx可更新 ' + stdout.replace(/\s/g, '').yellow.bold
+                                + ' => ' + r['dist-tags'].latest.yellow.bold + ',请使用 ' + '(sudo)npm update httpx -g'.bold + ' 进行更新');
+                        }
                     }
-                }
-            });
+                });
+            }
         });
 
         cp.exec('tt --from vmarket -p ' + (argv.proxyPort || Env.proxyPort), function(error, stdout, stderr){

@@ -202,6 +202,7 @@ var App = {
                 if(err) {
                     cb(null, {success:false,msg:err});
                 } else {
+                    phpController.refreshPhpEnv();
                     cb(null, {success:true});
                 }
             });
