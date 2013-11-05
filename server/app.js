@@ -58,8 +58,8 @@ var checkConfig = function(req, res, next){
 //页面渲染
 app.get('*.vm', checkConfig, webRoute.detail);
 app.get('/list/(:appname)?', webRoute.list);
-app.get('/', webRoute.index);
 app.get('/proxy', webRoute.proxy);
+
 
 //接口api
 app.all('/app/:operate', appApiRoute.operate);
@@ -68,6 +68,7 @@ app.post('/proxy/:operate', proxyApiRoute.proxyOperate);
 //具体业务逻辑
 app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
 app.all('/*', checkConfig, htmBizRoute.index);
+app.get('/', webRoute.index);
 
 http.createServer(app).listen(app.get('port'), function () {
     userCfg.init({
