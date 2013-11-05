@@ -2,7 +2,8 @@
 
 ###0.0.21###
 
-* bugfix 修正了初始化版本检测提示的问题
+* bugfix 修正了httpx初始化版本检测提示的问题
+* bugfix 修正了layout在vm中指定却无法匹配的问题
 * new 模板变量结构显示两种方案
 * new php应用的支持，比如tms_sdk
 * optimize 应用详情增加默认module，编码的修改，去除添加应用时的选项，调整部分界面
