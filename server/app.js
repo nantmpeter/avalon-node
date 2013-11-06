@@ -59,14 +59,6 @@ var checkConfig = function(req, res, next){
 app.get('*.vm', checkConfig, webRoute.detail);
 app.get('/list/(:appname)?', webRoute.list);
 app.get('/proxy', webRoute.proxy);
-
-
-//接口api
-app.all('/app/:operate', appApiRoute.operate);
-app.post('/proxy/:operate', proxyApiRoute.proxyOperate);
-
-//具体业务逻辑
-app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
 app.get(/^\/$/, function(req, res, next){
     //combo的处理
     if(/.*\.(css|js|ico|png|jpg|swf|less|gif|woff|scss).*/.test(req.url)) {
@@ -75,6 +67,13 @@ app.get(/^\/$/, function(req, res, next){
         next();
     }
 }, webRoute.index);
+
+//接口api
+app.all('/app/:operate', appApiRoute.operate);
+app.post('/proxy/:operate', proxyApiRoute.proxyOperate);
+
+//具体业务逻辑
+app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
 app.all('*', checkConfig, htmBizRoute.index);
 
 http.createServer(app).listen(app.get('port'), function () {
