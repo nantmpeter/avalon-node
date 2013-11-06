@@ -67,8 +67,15 @@ app.post('/proxy/:operate', proxyApiRoute.proxyOperate);
 
 //具体业务逻辑
 app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
-app.all('/*', checkConfig, htmBizRoute.index);
-app.get('/', webRoute.index);
+app.get(/^\/$/, function(req, res, next){
+    //combo的处理
+    if(/.*\.(css|js|ico|png|jpg|swf|less|gif|woff|scss).*/.test(req.url)) {
+        proxyBizRoute.index(req, res, next);
+    } else {
+        next();
+    }
+}, webRoute.index);
+app.all('*', checkConfig, htmBizRoute.index);
 
 http.createServer(app).listen(app.get('port'), function () {
     userCfg.init({
