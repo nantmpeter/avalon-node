@@ -15,6 +15,7 @@ var webx = require('../../../lib/webx/webx'),
     Template = require('../../../lib/webx/template'),
     request = require('request'),
     querystring = require('querystring'),
+    bodyParser = require('express').bodyParser(),
     url = require('url');
 
 //app系列
@@ -624,15 +625,17 @@ var App = {
     }
 };
 exports.operate = function(req, res){
-    var operate = req.params.operate;
+    bodyParser(req, res, function() {
+        var operate = req.params.operate;
 
-    var params = req.method == 'GET' ? req.query : req.body;
+        var params = req.method == 'GET' ? req.query : req.body;
 
-    App[operate](params, function(err, result) {
-        if(err) {
-            res.send(err);
-        } else {
-            res.send(result);
-        }
+        App[operate](params, function(err, result) {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(result);
+            }
+        });
     });
 };

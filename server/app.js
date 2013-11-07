@@ -32,6 +32,7 @@ app.configure(function () {
     app.engine('html', cons.jazz);
     app.use(express.favicon());
 //    app.use(express.logger('dev'));
+    //禁用bodyparser php因为post无法反向代理 https://github.com/nodejitsu/node-http-proxy/issues/180
 //    app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);

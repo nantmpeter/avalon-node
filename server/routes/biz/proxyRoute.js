@@ -53,8 +53,7 @@ exports.index = function (req, res, next) {
     var host = req.headers['x-forwarded-host'] || req.headers['X-Forwarded-For']|| req.headers.host || '',
         debug = userCfg.get('debug');
 
-    if(host.indexOf('127.0.0.1') == -1 && host.indexOf('localhost') == -1
-        && (/\.(css|js|ico|png|jpg|swf|less|gif|woff|scss)/.test(req.url) || req.url.indexOf("??") != -1)) {
+    if(host.indexOf('127.0.0.1') == -1 && host.indexOf('localhost') == -1) {
 
         if('httpx' == userCfg.get('proxyType')) {
             proxy.proxyRequest(req, res, {

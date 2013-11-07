@@ -9,6 +9,7 @@ var webUtil = require('../../../lib/util/util'),
     snapCfg = require('../../../lib/config/snapConfig'),
     request = require('request'),
     url = require('url'),
+    bodyParser = require('express').bodyParser(),
     Env = require('../../../lib/env');
 
 //代理系列
@@ -222,15 +223,17 @@ var Proxy = {
 };
 
 exports.proxyOperate = function(req, res){
-    var operate = req.params.operate;
+    bodyParser(req, res, function() {
+        var operate = req.params.operate;
 
-    var params = req.method == 'GET' ? req.query : req.body;
+        var params = req.method == 'GET' ? req.query : req.body;
 
-    Proxy[operate](params, function(err, result) {
-        if(err) {
-            res.send(err);
-        } else {
-            res.send(result);
-        }
+        Proxy[operate](params, function(err, result) {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(result);
+            }
+        });
     });
 };
