@@ -32,7 +32,7 @@ app.configure(function () {
     app.engine('html', cons.jazz);
     app.use(express.favicon());
 //    app.use(express.logger('dev'));
-    app.use(express.bodyParser());
+//    app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
@@ -59,22 +59,27 @@ var checkConfig = function(req, res, next){
 app.get('*.vm', checkConfig, webRoute.detail);
 app.get('/list/(:appname)?', webRoute.list);
 app.get('/proxy', webRoute.proxy);
-app.get(/^\/$/, function(req, res, next){
-    //combo的处理
-    if(/.*\.(css|js|ico|png|jpg|swf|less|gif|woff|scss).*/.test(req.url)) {
-        proxyBizRoute.index(req, res, next);
-    } else {
-        next();
-    }
-}, webRoute.index);
 
 //接口api
 app.all('/app/:operate', appApiRoute.operate);
 app.post('/proxy/:operate', proxyApiRoute.proxyOperate);
 
 //具体业务逻辑
-app.get('(*??*|*.(css|js|ico|png|jpg|swf|less|gif|woff|scss))', proxyBizRoute.index);
-app.all('*', checkConfig, htmBizRoute.index);
+app.all('*', function(req, res, next){
+    //assets代理
+    if(req.method == 'GET' && webUtil.isAssetsUrl(req.url)) {
+        proxyBizRoute.index(req, res, next);
+    } else {
+        next();
+    }
+}, function(req, res, next) {
+    //首页
+    if(req.method == 'GET' && /^\/$/.test(req.url)) {
+        webRoute.index(req, res, next);
+    } else {
+        next();
+    }
+}, checkConfig, htmBizRoute.index);
 
 http.createServer(app).listen(app.get('port'), function () {
     userCfg.init({

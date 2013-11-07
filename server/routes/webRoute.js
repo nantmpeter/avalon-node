@@ -23,7 +23,7 @@ var checkUpdate = function () {
 };
 
 //首页
-exports.index = function (req, res) {
+exports.index = function (req, res, next) {
     res.render('index', {
         apps: _.keys(userCfg.get('apps')),
         use: userCfg.get('use'),

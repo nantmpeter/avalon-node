@@ -1,5 +1,10 @@
 新版本修复了旧bug，新增了不少功能，也可能会有稳定性风险，请酌情升级，[升级指南](https://github.com/czy88840616/avalon-node/wiki/Install
 
+###0.0.22###
+
+* bugfix 修复了不从根目录开始的combo url的代理问题
+* bugfix 修正反向代理php后post请求不生效的问题
+
 ###0.0.21###
 
 * bugfix 修正了httpx初始化版本检测提示的问题
