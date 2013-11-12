@@ -154,6 +154,8 @@ var App = {
         var apps = userCfg.get('apps');
         if(apps[appName] && apps[appName].type == 'php') {
             phpController.refreshPhpEnv();
+        } else {
+            phpController.stopEnv();
         }
 
         userCfg.save(function(err){
